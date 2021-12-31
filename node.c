@@ -23,8 +23,6 @@ struct node **makeNodes(char chrs[], int ints[]){
 
 		*ptemp = createNode(ints[i], chrs[i], NULL, NULL); // Makes that space point to a UNIQUE node
 		nodeList[i] = ptemp; // Makes the pointer in nodeList[i] point to this UNIQUE space
-		// DEBUG
-		// printf("%p -> %p\n", &nodeList[i], nodeList[i]);
 	}
 	return nodeList;
 }

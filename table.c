@@ -35,18 +35,18 @@ void prepend(char *string, char chr){
  * consider it to be somewhat magical; I don't really feel like explaining
  * this one in much detail.
  */
-char **generateTableHelper(struct node *branch){
+char **generateEncodeTableHelper(struct node *branch){
 	if(branch->symbol != '\0'){
 		prepend(codes[currentCode], branch->symbol);
 		return &codes[currentCode++]; 
 	}else{
 
 		// Recursively adds to the string for the left branch
-		leftPointers[currentLeft] = generateTableHelper(branch->left);
+		leftPointers[currentLeft] = generateEncodeTableHelper(branch->left);
 		currentLeft++;
 
 		// Recursively adds to the string for the right branch
-		char **right = generateTableHelper(branch->right);
+		char **right = generateEncodeTableHelper(branch->right);
 		currentLeft--;
 
 		// Changes the code(s) for the current branch
@@ -78,7 +78,7 @@ char **generateTableHelper(struct node *branch){
  * where the first character is a character from a leaf and the rest are the
  * Huffman code for the character.
  */
-char **generateTable(struct node *root){
+char **generateEncodeTable(struct node *root){
 	int codeLength = 1 + charBit + 1; // character being encoded (1) + charBit (8) + null character (1)
 	char *tempString = malloc(codeLength * length * sizeof(char));
 	char **tempCodes = malloc(length * sizeof(char *));
@@ -95,7 +95,7 @@ char **generateTable(struct node *root){
 	}
 
 	// Recursive algorithm to create the codes
-	generateTableHelper(root);
+	generateEncodeTableHelper(root);
 	free(tempLeft);
 
 	// Moves the character for each code to the front

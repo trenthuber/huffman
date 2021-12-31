@@ -1,7 +1,7 @@
 #ifndef TREE
 #define TREE
 
-extern void huffmanAlg(struct node ***nodeList);
-extern struct node *generateTree(FILE *input);
+extern void huffmanEncodeAlg(struct node ***nodeList);
+extern struct node *generateEncodeTree(FILE *input);
 
 #endif

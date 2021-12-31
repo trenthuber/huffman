@@ -14,7 +14,7 @@ int tempLength;
  * that points to those two nodes with their combined weight, 
  * and then inserts this node back into the sorted list.
  */
-void huffmanAlg(struct node ***nodeList){
+void huffmanEncodeAlg(struct node ***nodeList){
 	int newWeight = (*nodeList)[tempLength - 1]->weight + (*nodeList)[tempLength - 2]->weight;
 
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
@@ -37,7 +37,7 @@ void huffmanAlg(struct node ***nodeList){
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
-struct node *generateTree(FILE *input){
+struct node *generateEncodeTree(FILE *input){
 	charBit = CHAR_BIT;
 	asciiSize = (int) pow(2.0, (double) charBit);
 
@@ -52,19 +52,13 @@ struct node *generateTree(FILE *input){
 	// Converting lists to list of nodes
 	struct node **nodeList = makeNodes(symb, freq);
 
-	// (For debugging)
-	/*
-	for(int i = 0; i < length; i++){
-		printf("%d: %c, %d\n", i, symb[i], freq[i]);
-	}
-	*/
 	free(symb);
 	free(freq);
 
 	// Creating Huffman tree from nodeList
 	tempLength = length;
 	while(tempLength > 1){
-		huffmanAlg(&nodeList);
+		huffmanEncodeAlg(&nodeList);
 	}
 
 	return nodeList[0];

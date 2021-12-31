@@ -12,8 +12,8 @@
 int main(int argc, char *argv[]){
 	if(handleOptions(argc, argv) == 0){
 		// Encode option
-		struct node *root = generateTree(input);
-		char **codes = generateTable(root);
+		struct node *root = generateEncodeTree(input);
+		char **codes = generateEncodeTable(root);
 		encodeFile(root, codes);
 	}else{
 		// Decode option
