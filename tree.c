@@ -3,10 +3,10 @@
 #include <limits.h>
 #include <math.h>
 
-#include "globals.h"
+#include "global.h"
+#include "nodeDef.h"
 #include "node.h"
-#include "nodeFuncs.h"
-#include "listFuncs.h"
+#include "list.h"
 
 int tempLength;
 

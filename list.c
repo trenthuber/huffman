@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "globals.h"
+#include "global.h"
 
 int searchArray(char array[], char symbol){
 	for(int i = 0; i < asciiSize; i++){
