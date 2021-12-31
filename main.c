@@ -6,7 +6,7 @@
 #include "nodeDef.h"
 #include "tree.h"
 #include "table.h"
-#include "write.h"
+#include "encode.h"
 
 int main(int argc, char *argv[]){
 	if(argc != 2){
@@ -14,15 +14,13 @@ int main(int argc, char *argv[]){
 		exit(-1);
 	}
 
-	FILE *input;
 	if((input = fopen(argv[1], "r")) == NULL){
-		printf("huffman: File does not exist or cannot be read from\n");
+		printf("huffman: Input file does not exist or cannot be read from\n");
 		exit(-1);
 	}
 
-	FILE *output;
 	if((output = fopen("out.huf", "w")) == NULL){
-		printf("huffman: Out file could not be created\n");
+		printf("huffman: Output file could not be created\n");
 		exit(-1);
 	}
 
@@ -36,7 +34,7 @@ int main(int argc, char *argv[]){
 		printf("%d - %s - %d\n", i, codes[i], codes[i][0]);
 	}
 	*/
-	writeFile(root, codes, output);
+	encodeFile(root, codes, input, output);
 
 	// Closing thoughts
 	fclose(input);
