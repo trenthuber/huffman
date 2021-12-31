@@ -12,6 +12,6 @@ extern void encodeHeader(struct node *root);
 extern void encodeString(char *code);
 extern void encodeBody(char **codes);
 extern void encodeCloser(void);
-extern void encodeFile(struct node *root, char **codes, FILE *input, FILE *output);
+extern void encodeFile(struct node *root, char **codes);
 
 #endif
