@@ -1,5 +1,5 @@
-#ifndef HUFFMANGLOBALS
-#define HUFFMANGLOBALS
+#ifndef GLOBAL
+#define GLOBAL
 
 extern int charBit;
 extern int asciiSize;

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h> 
 
-#include "globals.h"
-#include "node.h"
+#include "global.h"
+#include "nodeDef.h"
 
 char **codes;
 char *string;
@@ -35,18 +35,18 @@ void prepend(char *string, char chr){
  * consider it to be somewhat magical; I don't really feel like explaining
  * this one in much detail.
  */
-char **treeToTableHelper(struct node *branch){
+char **generateTableHelper(struct node *branch){
 	if(branch->symbol != '\0'){
 		prepend(codes[currentCode], branch->symbol);
 		return &codes[currentCode++]; 
 	}else{
 
 		// Recursively adds to the string for the left branch
-		leftPointers[currentLeft] = treeToTableHelper(branch->left);
+		leftPointers[currentLeft] = generateTableHelper(branch->left);
 		currentLeft++;
 
 		// Recursively adds to the string for the right branch
-		char **right = treeToTableHelper(branch->right);
+		char **right = generateTableHelper(branch->right);
 		currentLeft--;
 
 		// Changes the code(s) for the current branch
@@ -78,7 +78,7 @@ char **treeToTableHelper(struct node *branch){
  * where the first character is a character from a leaf and the rest are the
  * Huffman code for the character.
  */
-char **treeToTable(struct node *root){
+char **generateTable(struct node *root){
 	int codeLength = 1 + charBit + 1; // character being encoded (1) + charBit (8) + null character (1)
 	char *tempString = malloc(codeLength * length * sizeof(char));
 	char **tempCodes = malloc(length * sizeof(char *));
@@ -95,7 +95,7 @@ char **treeToTable(struct node *root){
 	}
 
 	// Recursive algorithm to create the codes
-	treeToTableHelper(root);
+	generateTableHelper(root);
 	free(tempLeft);
 
 	// Moves the character for each code to the front

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "globals.h"
-#include "node.h"
+#include "global.h"
+#include "nodeDef.h"
 
 struct node createNode(int weight, char symbol, struct node *left, struct node *right){
 	struct node newNode;

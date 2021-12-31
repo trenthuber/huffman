@@ -1,5 +1,5 @@
-#ifndef LISTFUNCTIONS
-#define LISTFUNCTIONS
+#ifndef LIST
+#define LIST
 
 extern int searchArray(char array[], char symbol);
 extern int createLists(char **chrs, int **ints, FILE *input);
