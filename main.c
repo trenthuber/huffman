@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
 	if(handleOptions(argc, argv) == 0){
 		// Encode option
-		struct node *root = generateEncodeTree(input);
+		struct node *root = generateEncodeTree();
 		char **codes = generateEncodeTable(root);
 		encodeFile(root, codes);
 	}else{

@@ -37,7 +37,7 @@ void huffmanEncodeAlg(struct node ***nodeList){
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
-struct node *generateEncodeTree(FILE *input){
+struct node *generateEncodeTree(void){
 	charBit = CHAR_BIT;
 	asciiSize = (int) pow(2.0, (double) charBit);
 
@@ -46,7 +46,7 @@ struct node *generateEncodeTree(FILE *input){
 	int *freq = (int *) malloc(asciiSize * sizeof(int));
 	if(symb == NULL || freq == NULL){mallocError(1);}
 
-	length = createLists(&symb, &freq, input);
+	length = createLists(&symb, &freq);
 	sort(&symb, &freq);
 
 	// Converting lists to list of nodes

@@ -2,6 +2,6 @@
 #define TREE
 
 extern void huffmanEncodeAlg(struct node ***nodeList);
-extern struct node *generateEncodeTree(FILE *input);
+extern struct node *generateEncodeTree(void);
 
 #endif

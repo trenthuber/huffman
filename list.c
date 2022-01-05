@@ -12,7 +12,7 @@ int searchArray(char array[], char symbol){
 	return -1;
 }
 
-int createLists(char **chrs, int **ints, FILE *input){
+int createLists(char **chrs, int **ints){
 	char next;
 	int newIndex = 0;
 	while((next = fgetc(input)) != EOF){
