@@ -8,7 +8,7 @@ extern char ***leftPointers;
 extern int currentLeft;
 
 extern void prepend(char *string, char chr);
-extern char **generateEncodeTableHelper(struct node *branch);
-extern char **generateEncodeTable(struct node *root);
+extern char **makeTableHelper(struct node *branch);
+extern char **makeTable(struct node *root);
 
 #endif

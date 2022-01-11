@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "global.h"
-#include "makeTree.h"
+#include "tree.h"
 #include "fileio.h"
 #include "table.h"
 
@@ -23,7 +23,7 @@ void encodeTree(struct node *root){
 }
 
 void encodeFile(struct node *root){
-	char **codes = generateEncodeTable(root);
+	char **codes = makeTable(root);
 
 	// Body
     char current;
@@ -52,7 +52,7 @@ void encodeFile(struct node *root){
 }
 
 void encode(void){
-	struct node *root = makeTree();
+	struct node *root = makeTreeEncode();
 
     encodeTree(root);
     encodeFile(root);

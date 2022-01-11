@@ -36,7 +36,7 @@ void huffmanAlg(struct node ***nodeList){
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
-struct node *makeTree(void){
+struct node *makeTreeEncode(void){
 	charBit = CHAR_BIT;
 	asciiSize = (int) pow(2.0, (double) charBit);
 
@@ -61,4 +61,9 @@ struct node *makeTree(void){
 	}
 
 	return nodeList[0];
+}
+
+struct node *makeTreeDecode(void){
+	struct node *test;
+	return test;
 }
