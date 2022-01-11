@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "global.h"
-#include "nodeDef.h"
 #include "node.h"
 #include "list.h"
 
@@ -14,7 +13,7 @@ int tempLength;
  * that points to those two nodes with their combined weight, 
  * and then inserts this node back into the sorted list.
  */
-void huffmanEncodeAlg(struct node ***nodeList){
+void huffmanAlg(struct node ***nodeList){
 	int newWeight = (*nodeList)[tempLength - 1]->weight + (*nodeList)[tempLength - 2]->weight;
 
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
@@ -37,7 +36,7 @@ void huffmanEncodeAlg(struct node ***nodeList){
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
-struct node *generateEncodeTree(void){
+struct node *makeTree(void){
 	charBit = CHAR_BIT;
 	asciiSize = (int) pow(2.0, (double) charBit);
 
@@ -58,7 +57,7 @@ struct node *generateEncodeTree(void){
 	// Creating Huffman tree from nodeList
 	tempLength = length;
 	while(tempLength > 1){
-		huffmanEncodeAlg(&nodeList);
+		huffmanAlg(&nodeList);
 	}
 
 	return nodeList[0];

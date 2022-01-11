@@ -2,7 +2,6 @@
 #include <stdlib.h> 
 
 #include "global.h"
-#include "nodeDef.h"
 
 char **codes;
 char *string;

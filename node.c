@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "global.h"
-#include "nodeDef.h"
 
 struct node createNode(int weight, char symbol, struct node *left, struct node *right){
 	struct node newNode;

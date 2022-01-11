@@ -1,5 +1,5 @@
-#ifndef TABLE
-#define TABLE
+#ifndef E_TABLE
+#define E_TABLE
 
 extern char **codes;
 extern char *string;
