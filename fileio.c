@@ -9,6 +9,10 @@ void checkEncodeBuffer(void){
     }
 }
 
+void checkDecodeBuffer(void){
+
+}
+
 void writeBit(int bit){
     buffer = buffer << 1;
     if(bit == 1){
@@ -16,6 +20,10 @@ void writeBit(int bit){
     }
     bufferSize++;
     checkEncodeBuffer();
+}
+
+int readBit(void){
+	return -1;
 }
 
 void writeChar(unsigned char uchar){
@@ -33,4 +41,8 @@ void writeChar(unsigned char uchar){
 
         uchar = uchar << 1;
     }while(bufferSize != begin);
+}
+
+unsigned char readChar(void){
+	return 0;
 }
