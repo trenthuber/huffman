@@ -7,4 +7,4 @@ huff:
 
 test:
 	./huffman test.txt -o test.huf # Encode test
-	# ./huffman -d test.huf -o testDecode.txt # Decode test
+	./huffman -d test.huf -o testDecode.txt # Decode test

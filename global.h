@@ -1,6 +1,8 @@
 #ifndef GLOBAL
 #define GLOBAL
 
+#define ASCII_SIZE 128 // Only works with files with normal ASCII characters
+
 struct node{
 	int weight;
 	char symbol;
@@ -9,13 +11,8 @@ struct node{
 };
 
 extern int length;
-extern int charBit;
-extern int asciiSize;
 extern FILE *input;
 extern FILE *output;
-
-extern unsigned char buffer;
-extern int bufferSize;
 
 extern void mallocError(int num);
 

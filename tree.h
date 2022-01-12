@@ -3,8 +3,9 @@
 
 int tempLength;
 
-extern void huffmanAlg(struct node ***nodeList);
+extern void makeTreeEncodeHelper(struct node ***nodeList);
 extern struct node *makeTreeEncode(void);
+extern void makeTreeDecodeHelper(void);
 extern struct node *makeTreeDecode(void);
 
 #endif

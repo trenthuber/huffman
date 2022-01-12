@@ -18,7 +18,13 @@ void encodeTreeHelper(struct node *branch){
 }
 
 void encodeTree(struct node *root){
-    writeChar((unsigned char) length); // First byte is the number of leaf nodes
+    bufferSize = 0; // There is nothing important in the buffer to start
+
+	/* The first byte written to the file is how many leaves the tree has
+	 * minus 1, since 256 (the maximum possible leaves in an 8-bit alphabet)
+	 * can't be written with a single byte
+	 */
+    writeChar((unsigned char) (length - 1)); 
     encodeTreeHelper(root);
 }
 
@@ -34,7 +40,6 @@ void encodeFile(struct node *root){
 				for(int j = 1; j < strlen(codes[i]); j++){
 					(codes[i][j] == '0') ? writeBit(0) : writeBit(1);
 				}
-                // printf("Chars: %c, %c\n", current, codes[i][0]);
             }
         }
     }
@@ -48,6 +53,10 @@ void encodeFile(struct node *root){
     }else{
         numZeros = 0;
     }
+
+	/* The last byte written to the file contains the buffer size of the
+	 * previous byte (which is the last byte that contains encoded information)
+	 */
     writeChar((unsigned char) (8 - numZeros));
 }
 

@@ -4,7 +4,7 @@
 #include "global.h"
 
 int searchArray(char array[], char symbol){
-	for(int i = 0; i < asciiSize; i++){
+	for(int i = 0; i < ASCII_SIZE; i++){
 		if(symbol == array[i]){
 			return i;
 		}
@@ -16,7 +16,7 @@ int createLists(char **chrs, int **ints){
 	char next;
 	int newIndex = 0;
 	while((next = fgetc(input)) != EOF){
-		if((unsigned char) next >= asciiSize){
+		if((int) next >= ASCII_SIZE){
 			printf("huffman: This file contains non-standard ASCII characters.\n");
 			exit(-1);
 		}
@@ -32,7 +32,7 @@ int createLists(char **chrs, int **ints){
 	return newIndex; // Returns the length of the arrays
 }
 
-/* List will never be longer than 256 (asciiSize) elements, so
+/* List will never be longer than 128 (ASCII_SIZE) elements, so
  * selection sort works fine in my opinion.
  */
 void sort(char **chrs, int **ints){

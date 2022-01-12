@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
+#include <limits.h> // For CHAR_BIT
 
 #include "global.h"
 
@@ -78,10 +79,16 @@ char **makeTableHelper(struct node *branch){
  * Huffman code for the character.
  */
 char **makeTable(struct node *root){
-	int codeLength = 1 + charBit + 1; // character being encoded (1) + charBit (8) + null character (1)
+
+	/*   character being encoded (1)
+	 * + number of bits a character has (8)
+	 * + null character (1)
+	 */
+	int codeLength = 1 + CHAR_BIT + 1; 
+
 	char *tempString = malloc(codeLength * length * sizeof(char));
 	char **tempCodes = malloc(length * sizeof(char *));
-	char ***tempLeft = malloc(charBit * sizeof(char **));
+	char ***tempLeft = malloc(CHAR_BIT * sizeof(char **));
 	if(tempString == NULL || tempCodes == NULL || tempLeft == NULL){mallocError(5);}
 
 	// String preparation

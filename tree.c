@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <math.h>
 
 #include "global.h"
 #include "node.h"
+#include "fileio.h"
 #include "list.h"
 
 int tempLength;
@@ -13,7 +13,7 @@ int tempLength;
  * that points to those two nodes with their combined weight, 
  * and then inserts this node back into the sorted list.
  */
-void huffmanAlg(struct node ***nodeList){
+void makeTreeEncodeHelper(struct node ***nodeList){
 	int newWeight = (*nodeList)[tempLength - 1]->weight + (*nodeList)[tempLength - 2]->weight;
 
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
@@ -37,15 +37,27 @@ void huffmanAlg(struct node ***nodeList){
 }
 
 struct node *makeTreeEncode(void){
-	charBit = CHAR_BIT;
-	asciiSize = (int) pow(2.0, (double) charBit);
 
 	// Creating sorted list of characters and their frequency from input file
-	char *symb = (char *) malloc(asciiSize * sizeof(char));
-	int *freq = (int *) malloc(asciiSize * sizeof(int));
+	char *symb = (char *) malloc(ASCII_SIZE * sizeof(char));
+	int *freq = (int *) malloc(ASCII_SIZE * sizeof(int));
 	if(symb == NULL || freq == NULL){mallocError(1);}
 
 	length = createLists(&symb, &freq);
+
+	// Edge cases
+	if(length == 0){
+		printf("huffman: File is empty\n");
+		exit(-1);
+	}
+	if(length == 1){
+		struct node *entry;
+		*entry = createNode(1, symb[0], NULL, NULL);
+		struct node *root;
+		*root = createNode(1, '\0', entry, NULL);
+		return root;
+	}
+
 	sort(&symb, &freq);
 
 	// Converting lists to list of nodes
@@ -57,13 +69,24 @@ struct node *makeTreeEncode(void){
 	// Creating Huffman tree from nodeList
 	tempLength = length;
 	while(tempLength > 1){
-		huffmanAlg(&nodeList);
+		makeTreeEncodeHelper(&nodeList);
 	}
 
 	return nodeList[0];
 }
 
+void makeTreeDecodeHelper(void){
+
+}
+
 struct node *makeTreeDecode(void){
+
+	// Adds one since we encoded it decremented one to catch the edge case
+	int numLeaves = (int) (fgetc(input) + 1);
+	setUpBuffersRead();
+	
+	
+
 	struct node *test;
 	return test;
 }
