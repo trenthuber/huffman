@@ -11,9 +11,11 @@ struct node{
 };
 
 extern int length;
+extern unsigned long fileSize;
 extern FILE *input;
 extern FILE *output;
 
 extern void mallocError(int num);
+extern void closeAll(void);
 
 #endif

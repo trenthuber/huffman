@@ -1,10 +1,30 @@
+.PHONY: bin clean uninstall
+
 CC = gcc
+CFLAGS = -O3 -Wall -Wextra
 
-all: huff test
+SRC = $(wildcard src/*.c) $(wildcard src/global/*.c)
+OBJ = $(SRC:.c=.o)
+BIN = bin
+LOCAL = /usr/local/bin
 
-huff:
-	$(CC) -o huffman global.c options.c node.c list.c tree.c fileio.c table.c encode.c decode.c main.c 
+all: bin huffman
 
-test:
-	./huffman test.txt -o test.huf # Encode test
-	./huffman -d test.huf -o testDecode.txt # Decode test
+bin:
+	mkdir -p ./$(BIN)
+
+huffman: $(OBJ)
+	$(CC) -o $(BIN)/huffman $^
+
+%.o: %.c
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+clean:
+	rm -rf $(BIN) $(OBJ)
+
+install: all
+	cp $(BIN)/huffman $(LOCAL)/huffman
+	chmod 755 $(LOCAL)/huffman
+
+uninstall:
+	rm -f $(LOCAL)/huffman

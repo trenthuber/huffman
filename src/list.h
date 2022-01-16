@@ -1,8 +1,8 @@
-#ifndef E_LIST
-#define E_LIST
+#ifndef LIST
+#define LIST
 
 extern int searchArray(char array[], char symbol);
-extern int createLists(char **chrs, int **ints);
+extern void makeLists(char **chrs, int **ints);
 extern void sort(char **chrs, int **ints);
 
 #endif

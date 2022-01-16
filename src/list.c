@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "global.h"
+#include "global/global.h"
 
+/* Finds the index of a character in an array of characters
+ * (I know strchr() exists, but I want an int to return)
+ */
 int searchArray(char array[], char symbol){
 	for(int i = 0; i < ASCII_SIZE; i++){
 		if(symbol == array[i]){
@@ -12,7 +15,11 @@ int searchArray(char array[], char symbol){
 	return -1;
 }
 
-int createLists(char **chrs, int **ints){
+/* Reads characters from the input file and creates a list
+ * of the total unique characters and the frequency those
+ * characters appear in the file
+ */
+void makeLists(char **chrs, int **ints){
 	char next;
 	int newIndex = 0;
 	while((next = fgetc(input)) != EOF){
@@ -28,12 +35,18 @@ int createLists(char **chrs, int **ints){
 			(*ints)[newIndex] = 1;
 			newIndex++;
 		}
+
+		fileSize++;
 	}
-	return newIndex; // Returns the length of the arrays
+
+	// Saves the total unique characters in the file in length
+	length = newIndex;
 }
 
-/* List will never be longer than 128 (ASCII_SIZE) elements, so
- * selection sort works fine in my opinion.
+/* Selection sort algorithm that sorts both lists based on
+ * the array of integers from largest to smallest (lists 
+ * will never be longer than 128 elements, so selection sort
+ * works fine, in my inexperience)
  */
 void sort(char **chrs, int **ints){
 	for(int i = 0; i < length; i++){

@@ -1,50 +1,45 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "global.h"
+#include "global/global.h"
+#include "global/fileio.h"
 #include "tree.h"
-#include "fileio.h"
 #include "table.h"
 
-void encodeTreeHelper(struct node *branch){
+/* Recursively traverses the Huffman tree, writing 
+ * a 0 for a parent node and a 1 for a leaf node
+ */
+void encodeTree(struct node *branch){
     if(branch->symbol == '\0'){
         writeBit(0);
-        encodeTreeHelper(branch->left);
-        encodeTreeHelper(branch->right);
+        encodeTree(branch->left);
+        encodeTree(branch->right);
     }else{
         writeBit(1);
         writeChar((unsigned char) branch->symbol);
     }   
 }
 
-void encodeTree(struct node *root){
-    bufferSize = 0; // There is nothing important in the buffer to start
-
-	/* The first byte written to the file is how many leaves the tree has
-	 * minus 1, since 256 (the maximum possible leaves in an 8-bit alphabet)
-	 * can't be written with a single byte
-	 */
-    writeChar((unsigned char) (length - 1)); 
-    encodeTreeHelper(root);
-}
-
 void encodeFile(struct node *root){
 	char **codes = makeTable(root);
-
-	// Body
     char current;
-    rewind(input); // File pointer to the next char was already moved in list.c
+
+    /* Resets the pointer of the input file to the 
+     * beginning (it was moved in list.c)
+     */
+    rewind(input);
+
     while((current = fgetc(input)) != EOF){
         for(int i = 0; i < length; i++){
             if(current == codes[i][0]){
-				for(int j = 1; j < strlen(codes[i]); j++){
+				for(int j = 1; j < (int) strlen(codes[i]); j++){
 					(codes[i][j] == '0') ? writeBit(0) : writeBit(1);
 				}
             }
         }
     }
 
-	// Closer
+	// Closer (last byte of the file)
     int numZeros = 8 - bufferSize;
     if(bufferSize != 0){
         for(int i = 0; i < numZeros; i++){
@@ -61,8 +56,8 @@ void encodeFile(struct node *root){
 }
 
 void encode(void){
-	struct node *root = makeTreeEncode();
+	struct node *root = makeTreeEncode(); // Makes the tree
 
-    encodeTree(root);
+    encodeTree(root); // Encodes the tree in the header of the file
     encodeFile(root);
 }
