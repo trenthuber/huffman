@@ -16,7 +16,7 @@ void printHelpMessage(void){
         "huffman, version 1.0\n\n"
         "usage: huffman [-hd] file [-o pathname]\n\n"
         "h : show help message\n"
-        "d : decode the given file\n"
+        "d : decompress the given file\n"
         "o [pathname] : output file (default is \"out.huf\" / \"out.txt\")\n"
     );
 }
