@@ -22,16 +22,16 @@ void makeTreeEncodeHelper(struct node ***nodeList){
 	*newNode = makeNode(newWeight, '\0', (*nodeList)[tempLength - 1], (*nodeList)[tempLength - 2]);
 	(*nodeList)[tempLength - 1] = NULL;
 
-	int end;
-	if(tempLength > 2){
+	// Place the new node in the sorted list
+	int end = 0;
+	if(tempLength > 1){
 		end = tempLength - 2;
 		while((end > 0) && ((*nodeList)[end - 1]->weight < newNode->weight)){
-			(*nodeList)[end] = (*nodeList)[end - 1];
+			(*nodeList)[end] = (*nodeList)[end - 1]; // Actual shifting of the pointers
 			end--;
 		}
-	}else{
-		end = 0;
 	}
+
 	(*nodeList)[end] = newNode;
 	tempLength--; // Overall, the length of the list has been decreased by one
 }

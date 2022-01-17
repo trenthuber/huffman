@@ -24,10 +24,7 @@ void encodeFile(struct node *root){
 	char **codes = makeTable(root);
     char current;
 
-    /* Resets the pointer of the input file to the 
-     * beginning (it was moved in list.c)
-     */
-    rewind(input);
+    rewind(input); // Resets file pointer
 
     while((current = fgetc(input)) != EOF){
         for(int i = 0; i < length; i++){
@@ -39,20 +36,12 @@ void encodeFile(struct node *root){
         }
     }
 
-	// Closer (last byte of the file)
-    int numZeros = 8 - bufferSize;
-    if(bufferSize != 0){
-        for(int i = 0; i < numZeros; i++){
-            writeBit(0);
-        }
-    }else{
-        numZeros = 0;
+	// Padding for the last byte
+    writeBit(1);
+    int numZeros = (8 - bufferSize) % 8;
+    for(int i = 0; i < numZeros; i++){
+        writeBit(0);
     }
-
-	/* The last byte written to the file contains the buffer size of the
-	 * previous byte (which is the last byte that contains encoded information)
-	 */
-    writeChar((unsigned char) (8 - numZeros));
 }
 
 void encode(void){

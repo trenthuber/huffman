@@ -9,24 +9,21 @@ int bufferSize = 0; // Assume buffer is empty to start
 unsigned char buffer;
 
 // Just for the read functions
-unsigned char n1buffer;
-unsigned char n2buffer;
+unsigned char nextBuffer;
 int endOfFile = 0;
 
 void setUpBuffersRead(void){
     int intBuffer = fgetc(input);
-    int intN1buffer = fgetc(input); // Character after buffer
-    int intN2buffer = fgetc(input); // Character after n1buffer
+    int intNextBuffer = fgetc(input); // Character after buffer
 
     // Making sure file isn't too small to decode
-    if(intN2buffer == EOF){
+    if(intNextBuffer == EOF){
         printf("huffman: Can't decode, file is too small\n");
         exit(-1);
     }
 
     buffer = (unsigned char) intBuffer;
-    n1buffer = (unsigned char) intN1buffer;
-    n2buffer = (unsigned char) intN2buffer;
+    nextBuffer = (unsigned char) intNextBuffer;
 
     bufferSize = 8; // Buffer is now full
 }
@@ -56,30 +53,33 @@ int checkBufferRead(void){
         }
 
         // Shifts the buffers along
-        buffer = n1buffer;
-        n1buffer = n2buffer;
+        buffer = nextBuffer;
         int current;
         if((current = fgetc(input)) != EOF){
-            n2buffer = (unsigned char) current;
+            nextBuffer = (unsigned char) current;
             bufferSize = 8; // Buffer is now full
         }else{
-
-            // Saves the last byte of the file as a number
-            int newBufferSize = (int) n1buffer;
-            if(newBufferSize > 7){
-
-                /* The last byte of the encoded file represents what the buffer 
-                 * size should be for the second to last byte (which is the last
-                 * byte of encoded information). If this number is larger that the
-                 * buffer, we can't decode
-                 */
-                printf("huffman: Can't decode, invalid last byte\n");
-                exit(-1);
+            endOfFile = 1;
+            
+            bufferSize = 0;
+            if(buffer == 128){
+                return 0;
             }
 
-            // Assigns the aforementioned last bufferSize
-            bufferSize = newBufferSize;
-            endOfFile = 1; // Want to exit the NEXT time bufferSize is 0
+            nextBuffer = buffer;
+            unsigned char endMask = 0b00000001;
+            unsigned char ending = nextBuffer & endMask;
+            int numZeros = 0;
+            while(ending == 0){
+                numZeros++;
+                nextBuffer = nextBuffer >> 1;
+                ending = nextBuffer & endMask;
+            }
+
+            /* Last byte ends with a string of "0"s that begin 
+             * with a 1. Thus, (numZeros + 1)
+             */
+            bufferSize = 8 - (numZeros + 1);
         }
     }
     return 0;
