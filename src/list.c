@@ -35,8 +35,6 @@ void makeLists(char **chrs, int **ints){
 			(*ints)[newIndex] = 1;
 			newIndex++;
 		}
-
-		fileSize++;
 	}
 
 	// Saves the total unique characters in the file in length

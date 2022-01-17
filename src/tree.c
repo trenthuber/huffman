@@ -70,6 +70,9 @@ struct node *makeTreeEncode(void){
 		makeTreeEncodeHelper(&nodeList);
 	}
 
+	// The sum of all the weights is the file size itself
+	fileSize = nodeList[0]->weight;
+
 	// Returns the root node of the tree
 	return nodeList[0];
 }
