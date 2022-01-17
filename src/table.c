@@ -44,7 +44,7 @@ int getMaxTreeDepth(void){
 	/* The first heuristic is based on the file size (calculated in list.c).
 	 * This formula usually wins for larger file sizes
 	 */
-	int maxTreeDepth = (int) ceil(log2((double) fileSize + 1));
+	int maxTreeDepth = (int) ceil(log2((double) fileSize + 1) - 1);
 
 	if(length < maxTreeDepth){
 		

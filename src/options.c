@@ -107,13 +107,11 @@ int handleOptions(int argc, char *argv[]){
                 printf("huffman: output file could not be created\n");
                 exit(-1);
             }
-            outputFN = "out.huf";
         }else{
             if((output = fopen("out.txt", "w")) == NULL){
                 printf("huffman: output file could not be created\n");
                 exit(-1);
             }
-            outputFN = "out.txt";
         }
     
     // If an output file was given, we make sure it has the correct filename extention
