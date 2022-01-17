@@ -8,8 +8,8 @@
 // Flags for input, output, and decode (true = 1)
 int iflag, oflag, dflag; // Automatically set to 0 since they're global
 
-// Strings of the filenames (for getting filename extentions later)
-char *inputFN, *outputFN; 
+// Strings of the filenames (for filename error detection)
+char *inputFN, *outputFN;
 
 void printHelpMessage(void){
     printf(
@@ -19,14 +19,6 @@ void printHelpMessage(void){
         "d : decompress the given file\n"
         "o [pathname] : output file (default is \"out.huf\" / \"out.txt\")\n"
     );
-}
-
-char *getFileExt(char *filename){
-	char *ext = strrchr(filename, '.');
-	if(ext == NULL || ext == filename){
-		return "";
-	}
-	return ext + 1;
 }
 
 int handleOptions(int argc, char *argv[]){
@@ -84,19 +76,7 @@ int handleOptions(int argc, char *argv[]){
     if(iflag == 0){
         printf("huffman: No input file provided\n");
         exit(-1);
-    }else{
-
-        // If we were given an input file, we check that it has the correct filename extention
-		char *inputExt = getFileExt(inputFN);
-		char *normalExt;
-
-		normalExt = (dflag == 0 ? "txt" : "huf");
-		
-		if(strcmp(inputExt, normalExt) != 0){
-			printf("huffman: please use the correct filename extentions for the input file (.%s)\n", normalExt);
-			exit(-1);
-		}
-	}
+    }
 
     /* If an output file was not provided we create a new one based on whether
      * we're encoding or decoding
@@ -115,19 +95,13 @@ int handleOptions(int argc, char *argv[]){
             }
 			outputFN = "out.txt";
         }
-    
-    // If an output file was given, we make sure it has the correct filename extention
-    }else{
-		char *outputExt = getFileExt(outputFN);
-		char *normalExt;
+    }
 
-		normalExt = (dflag == 0 ? "huf" : "txt");
-
-		if(strcmp(outputExt, normalExt) != 0){
-			printf("huffman: please use the correct filename extentions for the output file (.%s)\n", normalExt);
-			exit(-1);
-		}
-	}
+    // User can't compress/decompress a file onto itself
+    if(strcmp(inputFN, outputFN) == 0){
+        printf("huffman: can not use the same file for input and output\n");
+        exit(-1);
+    }
 
 	// Once the filenames have been checked, we can open the files
 	if((input = fopen(inputFN, "r")) == NULL){

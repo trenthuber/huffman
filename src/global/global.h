@@ -1,7 +1,7 @@
 #ifndef GLOBAL
 #define GLOBAL
 
-#define ASCII_SIZE 128 // Only works with files with normal ASCII characters
+#define ASCII_SIZE 256 // Number of different types of bytes
 
 struct node{
 	int weight;

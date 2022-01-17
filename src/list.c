@@ -22,13 +22,15 @@ int searchArray(char array[], char symbol){
 void makeLists(char **chrs, int **ints){
 	char next;
 	int newIndex = 0;
-	int numLines = 1;
+	// int numLines = 1;
 	while((next = fgetc(input)) != EOF){
-		if((unsigned char) next >= (int) ASCII_SIZE){
+		/*
+		if((unsigned char) next >= (unsigned char) ASCII_SIZE){
 			printf("huffman: This file contains a non-standard ASCII character at line %d\n", numLines);
 			exit(-1);
 		}
 		if(next == '\n'){numLines++;}
+		*/
 		int oldIndex;
 		if((oldIndex = searchArray(*chrs, next)) != -1){
 			(*ints)[oldIndex]++;
@@ -45,7 +47,7 @@ void makeLists(char **chrs, int **ints){
 
 /* Selection sort algorithm that sorts both lists based on
  * the array of integers from largest to smallest (lists 
- * will never be longer than 128 elements, so selection sort
+ * will never be longer than 256 elements, so selection sort
  * works fine, in my inexperience)
  */
 void sort(char **chrs, int **ints){
