@@ -11,7 +11,7 @@ struct node{
 };
 
 extern int length;
-extern unsigned long fileSize;
+extern unsigned long long fileSize;
 extern FILE *input;
 extern FILE *output;
 
