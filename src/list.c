@@ -22,11 +22,13 @@ int searchArray(char array[], char symbol){
 void makeLists(char **chrs, int **ints){
 	char next;
 	int newIndex = 0;
+	int lineNumber = 1;
 	while((next = fgetc(input)) != EOF){
-		if((int) next >= ASCII_SIZE){
-			printf("huffman: This file contains non-standard ASCII characters.\n");
+		if((unsigned char) next >= (int) ASCII_SIZE){
+			printf("huffman: This file contains non-standard ASCII characters at line %d\n", lineNumber);
 			exit(-1);
 		}
+		if(next == '\n'){lineNumber++;}
 		int oldIndex;
 		if((oldIndex = searchArray(*chrs, next)) != -1){
 			(*ints)[oldIndex]++;
