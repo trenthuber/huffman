@@ -10,29 +10,27 @@
  * a 0 for a parent node and a 1 for a leaf node
  */
 void encodeTree(struct node *branch){
-    if(branch->symbol == '\0'){
+
+    // If current node is an internal node
+    if(branch->type == 0 || branch->type == 1 || branch->type == 2){
         writeBit(0);
         encodeTree(branch->left);
         encodeTree(branch->right);
+    
+    // If current node is a leaf node
     }else{
         writeBit(1);
-        writeChar((unsigned char) branch->symbol);
-    }   
+        writeChar(branch->symbol);
+    }
 }
 
 void encodeFile(struct node *root){
 	char **codes = makeTable(root);
-    char current;
-
-    rewind(input); // Resets file pointer
+    int current;
 
     while((current = fgetc(input)) != EOF){
-        for(int i = 0; i < length; i++){
-            if(current == codes[i][0]){
-				for(int j = 1; j < (int) strlen(codes[i]); j++){
-					(codes[i][j] == '0') ? writeBit(0) : writeBit(1);
-				}
-            }
+        for(int i = 0; i < (int) strlen(codes[current]); i++){
+            (codes[current][i] == '0') ? writeBit(0) : writeBit(1);
         }
     }
 

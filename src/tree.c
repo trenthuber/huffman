@@ -5,7 +5,6 @@
 #include "global/global.h"
 #include "global/fileio.h"
 #include "node.h"
-#include "list.h"
 
 int tempLength;
 
@@ -13,26 +12,47 @@ int tempLength;
  * that points to those two nodes with their combined weight, 
  * and then inserts this node back into the sorted list.
  */
-void makeTreeEncodeHelper(struct node ***nodeList){
-	int newWeight = (*nodeList)[tempLength - 1]->weight + (*nodeList)[tempLength - 2]->weight;
+void makeTreeEncodeHelper(struct node ***nodePointers){
 
+	// Setting up the new node
+	unsigned long newWeight = (*nodePointers)[tempLength - 1]->weight + (*nodePointers)[tempLength - 2]->weight;
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
-	if(newNode == NULL){mallocError(4);}
+	if(newNode == NULL){mallocError("tree.c", 0);}
 
-	*newNode = makeNode(newWeight, '\0', (*nodeList)[tempLength - 1], (*nodeList)[tempLength - 2]);
-	(*nodeList)[tempLength - 1] = NULL;
+	*newNode = makeNode('\0', newWeight, 0, (*nodePointers)[tempLength - 1], (*nodePointers)[tempLength - 2], NULL);
+
+	// Setting up the rest of the nodes (parent nodes and which side they're on)
+
+	// Left node set up
+	if((*nodePointers)[tempLength - 1]->type == 5){
+		(*nodePointers)[tempLength - 1]->type = 3; // Left leaf node
+	}else{
+		(*nodePointers)[tempLength - 1]->type = 1; // Left internal node
+	}
+	(*nodePointers)[tempLength - 1]->parent = newNode;
+
+	// Right node set up
+	if((*nodePointers)[tempLength - 2]->type == 5){
+		(*nodePointers)[tempLength - 2]->type = 4; // Right leaf node
+	}else{
+		(*nodePointers)[tempLength - 2]->type = 2; // Right internal node
+	}
+	(*nodePointers)[tempLength - 2]->parent = newNode;
+
+	// Have the last pointer point to nothing since it's no longer used (for good measure)
+	(*nodePointers)[tempLength - 1] = NULL;
 
 	// Place the new node in the sorted list
 	int end = 0;
 	if(tempLength > 1){
 		end = tempLength - 2;
-		while((end > 0) && ((*nodeList)[end - 1]->weight < newNode->weight)){
-			(*nodeList)[end] = (*nodeList)[end - 1]; // Actual shifting of the pointers
+		while((end > 0) && ((*nodePointers)[end - 1]->weight < newNode->weight)){
+			(*nodePointers)[end] = (*nodePointers)[end - 1]; // Actual shifting of the pointers
 			end--;
 		}
 	}
 
-	(*nodeList)[end] = newNode;
+	(*nodePointers)[end] = newNode;
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
@@ -40,41 +60,35 @@ void makeTreeEncodeHelper(struct node ***nodeList){
  * that consist of these characters and their frequency
  */
 struct node *makeTreeEncode(void){
-
-	// Creating sorted list of characters and their frequency from input file
-	char *symb = (char *) malloc(ASCII_SIZE * sizeof(char));
-	int *freq = (int *) malloc(ASCII_SIZE * sizeof(int));
-	if(symb == NULL || freq == NULL){mallocError(1);}
-
-	// Also sets the length (total number of unique characters in the input file)
-	makeLists(&symb, &freq);
-
-	// Edge cases - need at least two chars for the algorithm to work
-	if(length <= 1){
-		printf("huffman: File does not contain enough text to encode\n");
-		exit(-1);
+	unsigned long *longs = (unsigned long *) malloc(ASCII_SIZE * sizeof(unsigned long));
+	if(longs == NULL){mallocError("tree.c", 1);}
+	for(int i = 0; i < ASCII_SIZE; i++){
+		longs[i] = 0;
 	}
 
-	// Organize by highest frequency
-	sort(&symb, &freq);
+	// Also sets the length (total number of unique characters in the input file)
+	int current;
+	while((current = fgetc(input)) != EOF){
+		longs[current]++;
+	}
+	rewind(input);
 
-	// Converting lists to list of nodes
-	struct node **nodeList = makeNodes(symb, freq);
+	// Also converts lists to a list of nodes
+	struct node **nodePointers = makeNodes(longs);
 
-	free(symb);
-	free(freq);
+	free(longs);
 
 	// Creating Huffman tree from nodeList
 	tempLength = length;
 	while(tempLength > 1){
-		makeTreeEncodeHelper(&nodeList);
+		makeTreeEncodeHelper(&nodePointers); // Pass by reference
 	}
 
 	// The sum of all the weights is the file size itself
-	fileSize = nodeList[0]->weight;
+	fileSize = nodePointers[0]->weight;
 
 	// Returns the root node of the tree
-	return nodeList[0];
+	return nodePointers[0];
 }
 
 /* Does the actual decoding by reading the file and recursively
@@ -83,37 +97,37 @@ struct node *makeTreeEncode(void){
 void makeTreeDecodeHelper(struct node *branch){
 	struct node *left = malloc(sizeof(struct node));
 	struct node *right = malloc(sizeof(struct node));
-	if(left == NULL || right == NULL){mallocError(5);}
+	if(left == NULL || right == NULL){mallocError("tree.c", 2);}
 
 	// Decode the LEFT branch
 	int nextBit = readBit();
 
-	// Case when left node is a parent node
+	// Case when left node is an internal node
 	if(nextBit == 0){
-		*left = makeNode(0, '\0', NULL, NULL);
+		*left = makeNode('\0', 0, 1, NULL, NULL, branch);
 		branch->left = left;
 		makeTreeDecodeHelper(branch->left);
 	
 	// Case when left node is a leaf node
 	}else{
-		char nextChar = readChar();
-		*left = makeNode(0, nextChar, NULL, NULL);
+		unsigned char nextChar = readChar();
+		*left = makeNode(nextChar, 0, 3, NULL, NULL, branch);
 		branch->left = left;
 	}
 
 	// Decode the RIGHT branch
 	nextBit = readBit();
 
-	// Case when right node is a parent node
+	// Case when right node is an internal node
 	if(nextBit == 0){
-		*right = makeNode(0, '\0', NULL, NULL);
+		*right = makeNode('\0', 0, 2, NULL, NULL, branch);
 		branch->right = right;
 		makeTreeDecodeHelper(branch->right);
 
 	// Case when right node is a leaf node
 	}else{
-		char nextChar = readChar();
-		*right = makeNode(0, nextChar, NULL, NULL);
+		unsigned char nextChar = readChar();
+		*right = makeNode(nextChar, 0, 4, NULL, NULL, branch);
 		branch->right = right;
 	}
 }
@@ -130,8 +144,8 @@ struct node *makeTreeDecode(void){
 	
 	// Making the root node for the tree
 	struct node *root = malloc(sizeof(struct node));
-	if(root == NULL){mallocError(6);}
-	*root = makeNode(0, '\0', NULL, NULL);
+	if(root == NULL){mallocError("tree.c", 3);}
+	*root = makeNode('\0', 0, 0, NULL, NULL, NULL);
 
 	// Making the rest of the tree
 	makeTreeDecodeHelper(root);

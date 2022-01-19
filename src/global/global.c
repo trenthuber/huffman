@@ -2,12 +2,12 @@
 #include <stdlib.h>
 
 int length = 0;
-int fileSize = 0;
+unsigned long fileSize = 0;
 FILE *input;
 FILE *output;
 
-void mallocError(int num){
-	printf("huffman: Couldn't allocate memory (%d)\n", num);
+void mallocError(char *filename, int num){
+	printf("huffman: Couldn't allocate memory (%s, %d)\n", filename, num);
 	exit(-1);
 }
 

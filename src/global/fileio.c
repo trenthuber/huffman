@@ -62,8 +62,10 @@ int checkBufferRead(void){
             endOfFile = 1;
             
             bufferSize = 0;
-            if(buffer == 128){
-                return 0;
+
+            // Edge case when the last byte IS the padding - nothing else to read
+            if(buffer == 0x80){
+                return -1;
             }
 
             nextBuffer = buffer;

@@ -20,7 +20,7 @@ void decode(void){
 		 * character to the output file and reset the node 
 		 * pointer to the root node
 		 */
-		if(nodeP->symbol != '\0'){
+		if(nodeP->type == 3 || nodeP->type == 4){
 			fputc(nodeP->symbol, output);
 			nodeP = root;
 		}

@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h> 
-#include <limits.h> // For CHAR_BIT
-#include <math.h> // For calculating codeLength
+#include <math.h>
 
 #include "global/global.h"
 
-char **codes;
 char *string;
-int currentCode = 0;
-char ***leftPointers;
-int currentLeft = 0;
+char **codes;
+unsigned char currentChar;
 
 // Adds a char to the beginning of a string
 void prepend(char *string, char chr){
@@ -33,74 +30,38 @@ void prepend(char *string, char chr){
 	*temp = chr;
 }
 
-/* Getting the max tree depth (i.e. how long the longest possible Huffman
- * code will be) is not as trivial as I first thought. There is no definitive
- * formula for calculating the max tree depth of a given file, but many 
- * heuristics can be put in place of a formula. This function finds the
- * minimum of two heuristics
+/* Given a node in a Huffman tree, this function uses the
+ * parent nodes of each node to traverse it's way back up
+ * tree to the root node. It takes this information as well
+ * as the node type identifier to insert a string of '1's
+ * and '0's into an array of strings.
  */
-int getMaxTreeDepth(void){
-
-	/* The first heuristic is based on the file size (calculated in list.c).
-	 * This formula usually wins for larger file sizes
-	 */
-	int maxTreeDepth = (int) ceil(log2((double) fileSize + 1));
-
-	if(length < maxTreeDepth){
-		
-		/* The second heuristic is simply based on the number of unique
-		 * characters the file has. Since we only repeat the algorithm
-		 * length - 1 times, we never will have more than depth of 
-		 * length - 1
-		 */
-		return length - 1;
+void makeCode(struct node* node){
+	
+	// We must be at the root node, thus we're done
+	if(node->type == 0){
+		return;
 	}
-	return maxTreeDepth;
+
+	// Node is a left node
+	if(node->type == 1 || node->type == 3){
+		prepend(codes[(int) currentChar], '0');
+
+	// Node is a right node
+	}else{
+		prepend(codes[(int) currentChar], '1');
+	}
+
+	makeCode(node->parent);
 }
 
-/* In all honesty, this function took quite a long time to create and I
- * consider it to be somewhat magical; I don't really feel like explaining
- * this one in much detail. It essentially consists of a list and several
- * pointers pointing to various items in the list. It writes "0"s and "1"s
- * to certain ranges of values between pointers recursively depending on
- * where we are in the tree
- */
-char **makeTableHelper(struct node *branch){
-	if(branch->symbol != '\0'){
-		prepend(codes[currentCode], branch->symbol);
-		return &codes[currentCode++]; 
+void traverseTree(struct node *branch){
+	if(branch->type == 3 || branch->type == 4){
+		currentChar = branch->symbol;
+		makeCode(branch);
 	}else{
-
-		// Recursively adds to the string for the left branch
-		leftPointers[currentLeft] = makeTableHelper(branch->left);
-		currentLeft++;
-
-		// Recursively adds to the string for the right branch
-		char **right = makeTableHelper(branch->right);
-		currentLeft--;
-
-		// Changes the code(s) for the current branch
-		char **temp;
-
-		// Left branch of current branch
-		if(currentLeft == 0){
-			temp = codes;
-		}else{
-			temp = (leftPointers[currentLeft - 1] + 1);
-		}
-		while(temp <= leftPointers[currentLeft]){
-			prepend(*temp, '0');
-			temp++;
-		}
-
-		// Right branch of current branch
-		temp = leftPointers[currentLeft] + 1;
-		while(temp <= right){
-			prepend(*temp, '1');
-			temp++;
-		}
-
-		return right;
+		traverseTree(branch->left);
+		traverseTree(branch->right);
 	}
 }
 
@@ -110,41 +71,22 @@ char **makeTableHelper(struct node *branch){
  */
 char **makeTable(struct node *root){
 
-	/*   character being encoded (1)
-	 * + maximum path length encoding (see getMaxTreeDepth())
-	 * + null character (1)
+	int codeLength = (int) ceil(log2((double) fileSize + 1)) + 1; // +1 for the null character at the end
+
+	/* The location of each code represents what character 
+	 * it's a code for, hence the use of ASCII_SIZE and not length
 	 */
-	int codeLength = 1 + getMaxTreeDepth() + 1;
+	string = (char *) malloc(ASCII_SIZE * codeLength * sizeof(char));
+	codes = (char **) malloc(ASCII_SIZE * sizeof(char *));
+	if(string == NULL || codes == NULL){mallocError("table.c", 0);}
 
-	char *tempString = malloc(codeLength * length * sizeof(char));
-	char **tempCodes = malloc(length * sizeof(char *));
-	char ***tempLeft = malloc(CHAR_BIT * sizeof(char **));
-	if(tempString == NULL || tempCodes == NULL || tempLeft == NULL){mallocError(5);}
-
-	// String preparation
-	leftPointers = tempLeft;
-	leftPointers[currentLeft] = codes = tempCodes;
-	string = tempString;
-	for(int i = 0; i < length; i++){
-		string[codeLength * i] = '\0';
-		codes[i] = &string[codeLength * i];
+	// Prepare the code table
+	for(int i = 0; i < ASCII_SIZE; i++){
+		*(string + (codeLength * i)) = '\0';
+		*(codes + i) = &string[codeLength * i];
 	}
 
-	// Recursive algorithm to create the codes
-	makeTableHelper(root);
-	free(tempLeft);
+	traverseTree(root);
 
-	// Moves the character for each code to the front
-	for(int i = 0; i < length; i++){
-		char *temp = codes[i];
-		while(*temp != '\0'){
-			temp++;
-		}
-		char *chrP = temp - 1;
-		char chr = *chrP;
-		*chrP = '\0';
-		prepend(codes[i], chr);
-	}
-	
 	return codes;
 }

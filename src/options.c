@@ -83,13 +83,13 @@ int handleOptions(int argc, char *argv[]){
      */
     if(oflag == 0){
         if(dflag == 0){
-            if((output = fopen("out.huf", "w")) == NULL){
+            if((output = fopen("out.huf", "wb")) == NULL){
                 printf("huffman: output file could not be created\n");
                 exit(-1);
             }
 			outputFN = "out.huf";
         }else{
-            if((output = fopen("out.txt", "w")) == NULL){
+            if((output = fopen("out.txt", "wb")) == NULL){
                 printf("huffman: output file could not be created\n");
                 exit(-1);
             }
@@ -104,11 +104,11 @@ int handleOptions(int argc, char *argv[]){
     }
 
 	// Once the filenames have been checked, we can open the files
-	if((input = fopen(inputFN, "r")) == NULL){
+	if((input = fopen(inputFN, "rb")) == NULL){
 		printf("huffman: input file does not exist\n");
 		exit(-1);
 	}
-	if((output = fopen(outputFN, "w")) == NULL){
+	if((output = fopen(outputFN, "wb")) == NULL){
 		printf("huffman: output file could not be created\n");
 		exit(-1);
 	}

@@ -1,7 +1,8 @@
 #ifndef NODE
 #define NODE
 
-extern struct node makeNode(int weight, char symbol, struct node *left, struct node *right);
-extern struct node **makeNodes(char chrs[], int ints[]);
+extern struct node makeNode(unsigned char symbol, unsigned long weight, unsigned char type, struct node *left, struct node *right, struct node *parent);
+extern void sortNodes(struct node *nodeList);
+extern struct node **makeNodes(unsigned long *longs);
 
 #endif
