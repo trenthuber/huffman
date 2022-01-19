@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int length = 0;
-unsigned long fileSize = 0;
+int fileSize = 0;
 FILE *input;
 FILE *output;
 

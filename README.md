@@ -38,9 +38,9 @@ split into seperate files (`encode.c` and `decode.c` respectively), but both fil
 
 ## Scope of the Program
 
-This program is intended to compress `.txt` files using [Huffman coding](https://en.wikipedia.org/wiki/Huffman_coding). The filesize is virtually
-unlimited, although *technically* ends at **18.4EB (16EiB)** for a 64-bit system. For a 32-bit system, the filesize limit is **4.2GB (4GiB)**, but 
-I think it's safe to say you'll struggle to use up all of that space with a single text file.
+This program is intended to compress `.txt` files using [Huffman coding](https://en.wikipedia.org/wiki/Huffman_coding). The 
+**file size is capped at 2.1GB** (2GiB) for a 64-bit system, but I think it's reasonable to assume you'll never have a single text file that exceeds that memory constraint. For a 32-bit system, this max file size is actually 32.8KB (32KiB) which is barely worth compressing. For this reason,
+**32-bit systems are not officially supported**.
 
 Although this was intended to be used exclusively with text files, you can *technically* compress **any** file type since the program treats all files
 as binary files. And yes, this also means you can **recursively compress files**, feeding the output of one compression as the input of another. 

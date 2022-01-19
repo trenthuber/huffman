@@ -15,7 +15,7 @@ int tempLength;
 void makeTreeEncodeHelper(struct node ***nodePointers){
 
 	// Setting up the new node
-	unsigned long newWeight = (*nodePointers)[tempLength - 1]->weight + (*nodePointers)[tempLength - 2]->weight;
+	int newWeight = (*nodePointers)[tempLength - 1]->weight + (*nodePointers)[tempLength - 2]->weight;
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
 	if(newNode == NULL){mallocError("tree.c", 0);}
 
@@ -60,32 +60,30 @@ void makeTreeEncodeHelper(struct node ***nodePointers){
  * that consist of these characters and their frequency
  */
 struct node *makeTreeEncode(void){
-	unsigned long *longs = (unsigned long *) malloc(ASCII_SIZE * sizeof(unsigned long));
-	if(longs == NULL){mallocError("tree.c", 1);}
+	int *ints = (int *) malloc(ASCII_SIZE * sizeof(int));
+	if(ints == NULL){mallocError("tree.c", 1);}
 	for(int i = 0; i < ASCII_SIZE; i++){
-		longs[i] = 0;
+		ints[i] = 0;
 	}
 
 	// Also sets the length (total number of unique characters in the input file)
 	int current;
 	while((current = fgetc(input)) != EOF){
-		longs[current]++;
+		ints[current]++;
 	}
+
 	rewind(input);
 
 	// Also converts lists to a list of nodes
-	struct node **nodePointers = makeNodes(longs);
+	struct node **nodePointers = makeNodes(ints);
 
-	free(longs);
+	free(ints);
 
 	// Creating Huffman tree from nodeList
 	tempLength = length;
 	while(tempLength > 1){
 		makeTreeEncodeHelper(&nodePointers); // Pass by reference
 	}
-
-	// The sum of all the weights is the file size itself
-	fileSize = nodePointers[0]->weight;
 
 	// Returns the root node of the tree
 	return nodePointers[0];

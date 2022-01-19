@@ -5,8 +5,7 @@ extern unsigned char mask;
 extern int bufferSize;
 extern unsigned char buffer;
 
-extern unsigned char n1buffer;
-extern unsigned char n2buffer;
+extern unsigned char nextBuffer;
 extern int endOfFile;
 
 extern void setUpBuffersRead(void);

@@ -5,7 +5,7 @@
 
 struct node{
 	unsigned char symbol;
-	unsigned long weight;
+	int weight;
 
 	/* 0 for root node (or generic internal node),
 	 * 1 for left internal node, 2 for right internal node,
@@ -22,7 +22,7 @@ struct node{
 };
 
 extern int length;
-extern unsigned long fileSize;
+extern int fileSize;
 extern FILE *input;
 extern FILE *output;
 

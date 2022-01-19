@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <math.h>
 
 #include "global/global.h"
@@ -36,7 +36,7 @@ void prepend(char *string, char chr){
  * as the node type identifier to insert a string of '1's
  * and '0's into an array of strings.
  */
-void makeCode(struct node* node){
+void makeCode(struct node *node){
 	
 	// We must be at the root node, thus we're done
 	if(node->type == 0){
@@ -80,7 +80,7 @@ char **makeTable(struct node *root){
 	codes = (char **) malloc(ASCII_SIZE * sizeof(char *));
 	if(string == NULL || codes == NULL){mallocError("table.c", 0);}
 
-	// Prepare the code table
+	// Prepare the code table and pointers
 	for(int i = 0; i < ASCII_SIZE; i++){
 		*(string + (codeLength * i)) = '\0';
 		*(codes + i) = &string[codeLength * i];

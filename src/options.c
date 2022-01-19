@@ -103,16 +103,29 @@ int handleOptions(int argc, char *argv[]){
         exit(-1);
     }
 
-	// Once the filenames have been checked, we can open the files
+	// Opening the input file
 	if((input = fopen(inputFN, "rb")) == NULL){
 		printf("huffman: input file does not exist\n");
 		exit(-1);
 	}
+
+    // Checks for file size for encoding process
+    if(dflag == 0){
+        fseek(input, 0, SEEK_END);
+        if(ftell(input) > 2147483647){ // 2147483647 = (2^31) - 1 = longest number for a signed int
+            printf("huffman: file too large to encode\n");
+            exit(-1);
+        }
+        fileSize = (int) ftell(input);
+        rewind(input);
+    }
+
+    // Opening the output file
 	if((output = fopen(outputFN, "wb")) == NULL){
 		printf("huffman: output file could not be created\n");
 		exit(-1);
 	}
 
-    // We return the decode flag so the main can know what function to call
+    // We return the decode flag so main() can know what function to call
     return dflag;
 }

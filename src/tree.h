@@ -1,11 +1,11 @@
 #ifndef TREE
 #define TREE
 
-int tempLength;
+extern int tempLength;
 
-extern void makeTreeEncodeHelper(struct node ***nodeList);
+extern void makeTreeEncodeHelper(struct node ***nodePointers);
 extern struct node *makeTreeEncode(void);
-extern void makeTreeDecodeHelper(void);
+extern void makeTreeDecodeHelper(struct node *branch);
 extern struct node *makeTreeDecode(void);
 
 #endif
