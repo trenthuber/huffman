@@ -49,6 +49,7 @@ set, files that have a very clear most used character, second most used characte
 bits to the characters that are used the most. The issue with the average binary file is that it's bytes are relatively random. This means two things:
 1. It will probably use almost all possible bytes
 2. It will probably have an even distribution of those bytes
+
 If most of the bytes happen with the same frequency, all the bytes will have (more or less) the same code length. And if all bytes happen with similar
 frequency, then all these bytes end up getting a code length of pretty much the same length they were before. For this reason, compressing binary
 files, while possible, isn't at all practical. The largest binary file I tested was compressed by 1/100 of a percent.
