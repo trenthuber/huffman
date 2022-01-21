@@ -138,7 +138,7 @@ void writeChar(unsigned char uchar){
  * to be read as a part of the final character
  */
 unsigned char readChar(void){
-    unsigned char uchar;
+    unsigned char uchar = '\0';
 	for(int i = 0; i < CHAR_BIT; i++){
         int bit = readBit();
         if(bit != -1){

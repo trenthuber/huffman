@@ -2,6 +2,7 @@
 
 CC = gcc
 CFLAGS = -O3 -Wall -Wextra
+LDFLAGS = -lm
 
 SRC = $(wildcard src/*.c) $(wildcard src/global/*.c)
 OBJ = $(SRC:.c=.o)
@@ -14,7 +15,7 @@ bin:
 	mkdir -p ./$(BIN)
 
 huffman: $(OBJ)
-	$(CC) -o $(BIN)/huffman $^
+	$(CC) -o $(BIN)/huffman $^ $(LDFLAGS)
 
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS)
