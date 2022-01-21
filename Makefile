@@ -2,7 +2,7 @@
 
 CC = gcc
 CFLAGS = -O3 -Wall -Wextra
-LDFLAGS = -lm
+LDFLAGS = -lm -lc
 
 SRC = $(wildcard src/*.c) $(wildcard src/global/*.c)
 OBJ = $(SRC:.c=.o)

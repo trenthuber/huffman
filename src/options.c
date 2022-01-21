@@ -21,9 +21,17 @@ void printHelpMessage(void){
     );
 }
 
-int handleOptions(int argc, char *argv[]){
+int handleOptions(int argc, char **argv){
     int opt;
-    while(optind < argc){
+
+    /* This variable is here to make sure this works both with the BSD (macOS) 
+     * and the GNU (Linux) getopt() function. They both use the optind variable slightly 
+     * differently, so I just implemented by own that always works the way it's 
+     * suppose to.
+     */
+    int argvIndex = 1;
+
+    while(argvIndex < argc){
         if((opt = getopt(argc, argv, "hdo:")) != -1){
             switch(opt){
 
@@ -37,7 +45,7 @@ int handleOptions(int argc, char *argv[]){
 
                     // Checks to see if it has already assigned an output file
                     if(oflag == 0){
-						outputFN = optarg;
+                        outputFN = optarg;
                         oflag = 1;
                     }else{
                         printf("huffman: can only output to one file at a time\n");
@@ -49,32 +57,31 @@ int handleOptions(int argc, char *argv[]){
                 case 'd':
                     dflag = 1;
                     break;
+                
+                // Something went wrong
+                case '?':
+                default:
+                    printf("huffman: non-valid option\n");
+                    exit(-1);
             }
-        
-        /* In this case, we have an argument that is not an option or a parameter for
-         * an option, so it must be the input filename
-         */
         }else{
-
-            // No input file given yet
             if(iflag == 0){
-				inputFN = argv[optind];
                 iflag = 1;
-                optind++;
-            
-            // Too many input files given
-            }else{
-                printf("huffman: can only take input from one file at a time\n");
-                exit(-1);
+                inputFN = argv[optind];
             }
         }
+        argvIndex++;
+    }
+    
+    // Checks if there are no input files provided
+    if(iflag == 0){
+        printf("huffman: no input file provided\n");
+        exit(-1);
     }
 
-    /* After parsing all the options, we check to make sure we at least were given 
-     * an input file
-     */
-    if(iflag == 0){
-        printf("huffman: No input file provided\n");
+    // Checks if there is more than one input file provided
+    if(argc > argvIndex){
+        printf("huffman: can only take input from one file\n");
         exit(-1);
     }
 

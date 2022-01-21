@@ -52,7 +52,7 @@ bits to the characters that are used the most. The issue with the average binary
 
 If most of the bytes happen with the same frequency, all the bytes will have (more or less) the same code length. And if all bytes happen with similar
 frequency, then all these bytes end up getting a code length of pretty much the same length they were before. For this reason, compressing binary
-files, while possible, isn't at all practical. The largest binary file I tested was compressed by 1/100 of a percent.
+files, while possible, isn't at all practical. The largest binary file I tested was compressed by 1/100th of a percent.
 
 ## How the Program Works (for those that are interested)
 
