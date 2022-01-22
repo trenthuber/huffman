@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "global/global.h"
 
@@ -14,28 +15,33 @@ struct node makeNode(unsigned char symbol, int weight, unsigned char type, struc
 	return newNode;
 }
 
-/* The algorithm sorts an array of pointers to nodes
- * (because this list will never be longer than 256
- * nodes, I figured a selection sort algorithm should
- * be fine)
- */
-void sortNodes(struct node **nodePointers){
-	struct node *temp;
+void swapNodes(struct node *one, struct node *two){
+	struct node *temp = one;
+	one = two;
+	two = temp;
+}
 
-	for(int i = 0; i < length; i++){
-		int maxFreq = 0;
-		int maxIndex = 0;
-		for(int j = i; j < length; j++){
-			if(nodePointers[j]->weight > maxFreq){
-				maxFreq = nodePointers[j]->weight;
-				maxIndex = j;
-			}
+int partitionNodes(struct node **nodePointers, int start, int stop){
+	int randInt = (rand() % (stop - start + 1)) + start;
+	swapNodes(nodePointers[randInt], nodePointers[stop]);
+	struct node *pivot = nodePointers[stop];
+
+	int i = start;
+	for(int j = i; j < stop; j++){
+		if(nodePointers[j]->weight > pivot->weight){
+			swapNodes(nodePointers[i], nodePointers[j]);
+			i++;
 		}
-		if(maxIndex != i){
-			temp = nodePointers[maxIndex];
-			nodePointers[maxIndex] = nodePointers[i];
-			nodePointers[i] = temp;
-		}
+	}
+	swapNodes(nodePointers[i], pivot);
+	return i;
+}
+
+void quicksortNodes(struct node **nodePointers, int start, int stop){
+	if(start < stop){
+		int pivot = partitionNodes(nodePointers, start, stop);
+		quicksortNodes(nodePointers, start, pivot - 1);
+		quicksortNodes(nodePointers, pivot + 1, stop);
 	}
 }
 
@@ -58,12 +64,14 @@ struct node **makeNodes(int *ints){
 
 	// Check we have enough unique symbols to make a tree
 	if(length <= 1){
-		printf("huffman: File does not contain enough text to encode\n");
+		fprintf(stderr, "huffman: File does not contain enough text to encode\n");
 		exit(-1);
 	}
 
-	/* Now that we have the length variable, we can create the array of 
-	 * pointers to nodes used for the rest of encode process
+	/* It would be easier to sort and shift 8 byte pointers to nodes rather than
+	 * sorting and shifting 30 byte nodes themselves. At the expense of what is
+	 * relatively little memory, we increase runtime for this section almost
+	 * fourfold
 	 */
 	struct node **nodePointers = (struct node **) malloc(length * sizeof(struct node *));
 	if(nodePointers == NULL){mallocError("node.c", 1);}
@@ -72,7 +80,8 @@ struct node **makeNodes(int *ints){
 		*(nodePointers + i) = &nodes[i]; // Pointer arithmetic to the rescue!!!
 	}
 
-	sortNodes(nodePointers);
-
+	srand(time(NULL));
+	quicksortNodes(nodePointers, 0, length - 1);
+	
 	return nodePointers;
 }

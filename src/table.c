@@ -4,8 +4,7 @@
 
 #include "global/global.h"
 
-char *string;
-char **codes;
+char *codes;
 unsigned char currentChar;
 
 // Adds a char to the beginning of a string
@@ -45,11 +44,11 @@ void makeCode(struct node *node){
 
 	// Node is a left node
 	if(node->type == 1 || node->type == 3){
-		prepend(codes[(int) currentChar], '0');
+		prepend(codes + (codeLength * (int) currentChar), '0');
 
 	// Node is a right node
 	}else{
-		prepend(codes[(int) currentChar], '1');
+		prepend(codes + (codeLength * (int) currentChar), '1');
 	}
 
 	makeCode(node->parent);
@@ -69,21 +68,19 @@ void traverseTree(struct node *branch){
  * where the first character of each string is a character from a leaf node and the
  * rest of the string is the Huffman code for the character
  */
-char **makeTable(struct node *root){
+char *makeTable(struct node *root){
 
-	int codeLength = (int) ceil(log2((double) fileSize + 1)) + 1; // +1 for the null character at the end
+	codeLength = (int) ceil(log2((double) fileSize + 1)) + 1; // +1 for the null character at the end
 
 	/* The location of each code represents what character 
 	 * it's a code for, hence the use of ASCII_SIZE and not length
 	 */
-	string = (char *) malloc(ASCII_SIZE * codeLength * sizeof(char));
-	codes = (char **) malloc(ASCII_SIZE * sizeof(char *));
-	if(string == NULL || codes == NULL){mallocError("table.c", 0);}
+	codes = (char *) malloc(ASCII_SIZE * codeLength * sizeof(char));
+	if(codes == NULL){mallocError("table.c", 0);}
 
 	// Prepare the code table and pointers
 	for(int i = 0; i < ASCII_SIZE; i++){
-		*(string + (codeLength * i)) = '\0';
-		*(codes + i) = &string[codeLength * i];
+		*(codes + (codeLength * i)) = '\0';
 	}
 
 	traverseTree(root);

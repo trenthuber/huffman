@@ -25,12 +25,12 @@ void encodeTree(struct node *branch){
 }
 
 void encodeFile(struct node *root){
-	char **codes = makeTable(root);
+	char *codes = makeTable(root);
     int current;
 
     while((current = fgetc(input)) != EOF){
-        for(int i = 0; i < (int) strlen(codes[current]); i++){
-            (codes[current][i] == '0') ? writeBit(0) : writeBit(1);
+        for(int i = 0; i < (int) strlen(codes + (codeLength * current)); i++){
+            (codes + (codeLength * (int) current))[i] == '0' ? writeBit(0) : writeBit(1);
         }
     }
 
@@ -43,8 +43,8 @@ void encodeFile(struct node *root){
 }
 
 void encode(void){
-	struct node *root = makeTreeEncode(); // Makes the tree
+	struct node *root = makeTreeEncode();
 
-    encodeTree(root); // Encodes the tree in the header of the file
+    encodeTree(root);
     encodeFile(root);
 }

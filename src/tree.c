@@ -136,7 +136,7 @@ void makeTreeDecodeHelper(struct node *branch){
 struct node *makeTreeDecode(void){
 	setUpBuffersRead();
 	if(readBit() != 0){ // First bit should always be 0 since every tree starts with a root node
-		printf("huffman: Can't decode, invalid first byte\n");
+		fprintf(stderr, "huffman: Can't decode, invalid first byte\n");
 		exit(-1);
 	}
 	

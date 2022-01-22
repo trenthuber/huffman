@@ -18,7 +18,7 @@ void setUpBuffersRead(void){
 
     // Making sure file isn't too small to decode
     if(intNextBuffer == EOF){
-        printf("huffman: Can't decode, file is too small\n");
+        fprintf(stderr, "huffman: Can't decode, file is too small\n");
         exit(-1);
     }
 
@@ -152,7 +152,7 @@ unsigned char readChar(void){
              * the header, we should never reach the end of the file while 
              * reading characters
              */
-            printf("huffman: Can't decode, file only contains a header\n");
+            fprintf(stderr, "huffman: Can't decode, file only contains a header\n");
             exit(-1);
         }
     }

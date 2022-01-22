@@ -47,8 +47,9 @@ int handleOptions(int argc, char **argv){
                     if(oflag == 0){
                         outputFN = optarg;
                         oflag = 1;
+                        argvIndex++;
                     }else{
-                        printf("huffman: can only output to one file at a time\n");
+                        fprintf(stderr, "huffman: can only output to one file at a time\n");
                         exit(-1);
                     }
                     break;
@@ -61,27 +62,25 @@ int handleOptions(int argc, char **argv){
                 // Something went wrong
                 case '?':
                 default:
-                    printf("huffman: non-valid option\n");
+                    fprintf(stderr, "huffman: non-valid option\n");
                     exit(-1);
             }
         }else{
             if(iflag == 0){
                 iflag = 1;
                 inputFN = argv[optind];
+            }else{
+                fprintf(stderr, "huffman: can only take input from one file\n");
+                exit(-1);
             }
+            optind++;
         }
         argvIndex++;
     }
     
     // Checks if there are no input files provided
     if(iflag == 0){
-        printf("huffman: no input file provided\n");
-        exit(-1);
-    }
-
-    // Checks if there is more than one input file provided
-    if(argc > argvIndex){
-        printf("huffman: can only take input from one file\n");
+        fprintf(stderr, "huffman: no input file provided\n");
         exit(-1);
     }
 
@@ -91,13 +90,13 @@ int handleOptions(int argc, char **argv){
     if(oflag == 0){
         if(dflag == 0){
             if((output = fopen("out.huf", "wb")) == NULL){
-                printf("huffman: output file could not be created\n");
+                fprintf(stderr, "huffman: output file could not be created\n");
                 exit(-1);
             }
 			outputFN = "out.huf";
         }else{
             if((output = fopen("out.txt", "wb")) == NULL){
-                printf("huffman: output file could not be created\n");
+                fprintf(stderr, "huffman: output file could not be created\n");
                 exit(-1);
             }
 			outputFN = "out.txt";
@@ -106,13 +105,13 @@ int handleOptions(int argc, char **argv){
 
     // User can't compress/decompress a file onto itself
     if(strcmp(inputFN, outputFN) == 0){
-        printf("huffman: can not use the same file for input and output\n");
+        fprintf(stderr, "huffman: can not use the same file for input and output\n");
         exit(-1);
     }
 
 	// Opening the input file
 	if((input = fopen(inputFN, "rb")) == NULL){
-		printf("huffman: input file does not exist\n");
+		fprintf(stderr, "huffman: input file does not exist\n");
 		exit(-1);
 	}
 
@@ -120,7 +119,7 @@ int handleOptions(int argc, char **argv){
     if(dflag == 0){
         fseek(input, 0, SEEK_END);
         if(ftell(input) > 2147483647){ // 2147483647 = (2^31) - 1 = longest number for a signed int
-            printf("huffman: file too large to encode\n");
+            fprintf(stderr, "huffman: file too large to encode\n");
             exit(-1);
         }
         fileSize = (int) ftell(input);
@@ -129,7 +128,7 @@ int handleOptions(int argc, char **argv){
 
     // Opening the output file
 	if((output = fopen(outputFN, "wb")) == NULL){
-		printf("huffman: output file could not be created\n");
+		fprintf(stderr, "huffman: output file could not be created\n");
 		exit(-1);
 	}
 

@@ -23,6 +23,7 @@ struct node{
 
 extern int length;
 extern int fileSize;
+extern int codeLength;
 extern FILE *input;
 extern FILE *output;
 
