@@ -8,40 +8,48 @@
 
 int tempLength;
 
+void freeTree(struct node *branch){
+	if(branch != NULL){
+		freeTree(branch->left);
+		freeTree(branch->right);
+		free(branch);
+	}
+}
+
 /* Removes the last two nodes from the list, creates a new node
  * that points to those two nodes with their combined weight, 
  * and then inserts this node back into the sorted list.
  */
-void makeTreeEncodeHelper(struct node ***nodePointers){
+void makeTreeEncodeHelper(struct node ***nodesP){
 
 	// Setting up the new node
-	int newWeight = (*nodePointers)[tempLength - 1]->weight + (*nodePointers)[tempLength - 2]->weight;
-	struct node *newNode = makeNode('\0', newWeight, (unsigned char) 0, (*nodePointers)[tempLength - 1], (*nodePointers)[tempLength - 2], NULL);
+	int newWeight = (*nodesP)[tempLength - 1]->weight + (*nodesP)[tempLength - 2]->weight;
+	struct node *newNode = makeNode('\0', newWeight, (unsigned char) 0, (*nodesP)[tempLength - 1], (*nodesP)[tempLength - 2], NULL);
 
 	// Setting up the rest of the nodes (parent nodes and which side they're on)
 
 	// Left node set up
-	(*nodePointers)[tempLength - 1]->type = (unsigned char) 1;
-	(*nodePointers)[tempLength - 1]->parent = newNode;
+	(*nodesP)[tempLength - 1]->type = (unsigned char) 1;
+	(*nodesP)[tempLength - 1]->parent = newNode;
 
 	// Right node set up
-	(*nodePointers)[tempLength - 2]->type = (unsigned char) 2;
-	(*nodePointers)[tempLength - 2]->parent = newNode;
+	(*nodesP)[tempLength - 2]->type = (unsigned char) 2;
+	(*nodesP)[tempLength - 2]->parent = newNode;
 
 	// Have the last pointer point to nothing since it's no longer used (for good measure)
-	(*nodePointers)[tempLength - 1] = NULL;
+	(*nodesP)[tempLength - 1] = NULL;
 
 	// Place the new node in the sorted list
 	int end = 0;
 	if(tempLength > 1){
 		end = tempLength - 2;
-		while((end > 0) && ((*nodePointers)[end - 1]->weight < newNode->weight)){
-			(*nodePointers)[end] = (*nodePointers)[end - 1]; // Actual shifting of the pointers
+		while((end > 0) && ((*nodesP)[end - 1]->weight < newNode->weight)){
+			(*nodesP)[end] = (*nodesP)[end - 1]; // Actual shifting of the pointers
 			end--;
 		}
 	}
 
-	(*nodePointers)[end] = newNode;
+	(*nodesP)[end] = newNode;
 	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
@@ -49,12 +57,9 @@ void makeTreeEncodeHelper(struct node ***nodePointers){
  * that consist of these characters and their frequency
  */
 struct node *makeTreeEncode(void){
-	int *ints = (int *) malloc(ASCII_SIZE * sizeof(int));
+	int *ints = (int *) calloc(ASCII_SIZE, sizeof(int));
 	if(ints == NULL){mallocError("tree.c", 0);}
-	for(int i = 0; i < ASCII_SIZE; i++){
-		ints[i] = 0;
-	}
-
+	
 	// Also sets the length (total number of unique characters in the input file)
 	int current;
 	while((current = fgetc(input)) != EOF){
@@ -63,19 +68,19 @@ struct node *makeTreeEncode(void){
 
 	rewind(input);
 
-	// Also converts lists to a list of nodes
-	struct node **nodePointers = makeNodes(ints);
+	// Converts a lists of ints to a list of pointers to nodes
+	struct node **nodes = makeNodes(ints);
 
 	free(ints);
 
-	// Creating Huffman tree from nodeList
+	// Creating Huffman tree from nodes
 	tempLength = length;
 	while(tempLength > 1){
-		makeTreeEncodeHelper(&nodePointers); // Pass by reference
+		makeTreeEncodeHelper(&nodes); // Pass by reference
 	}
 
 	// Returns the root node of the tree
-	return nodePointers[0];
+	return nodes[0];
 }
 
 /* Does the actual decoding by reading the file and recursively
