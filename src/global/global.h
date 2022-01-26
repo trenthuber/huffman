@@ -7,11 +7,7 @@ struct node{
 	unsigned char symbol;
 	int weight;
 
-	/* 0 for root node (or generic internal node),
-	 * 1 for left internal node, 2 for right internal node,
-	 * 3 for left leaf node, 4 for right leaf node,
-	 * 5 for generic leaf node
-	 */
+	// 1 for left, 2 for right (0 for nodes with no type)
 	unsigned char type;
 
 	struct node *left;

@@ -24,19 +24,11 @@ void makeTreeEncodeHelper(struct node ***nodePointers){
 	// Setting up the rest of the nodes (parent nodes and which side they're on)
 
 	// Left node set up
-	if((*nodePointers)[tempLength - 1]->type == 5){
-		(*nodePointers)[tempLength - 1]->type = 3; // Left leaf node
-	}else{
-		(*nodePointers)[tempLength - 1]->type = 1; // Left internal node
-	}
+	(*nodePointers)[tempLength - 1]->type = 1;
 	(*nodePointers)[tempLength - 1]->parent = newNode;
 
 	// Right node set up
-	if((*nodePointers)[tempLength - 2]->type == 5){
-		(*nodePointers)[tempLength - 2]->type = 4; // Right leaf node
-	}else{
-		(*nodePointers)[tempLength - 2]->type = 2; // Right internal node
-	}
+	(*nodePointers)[tempLength - 2]->type = 2;
 	(*nodePointers)[tempLength - 2]->parent = newNode;
 
 	// Have the last pointer point to nothing since it's no longer used (for good measure)
@@ -109,7 +101,7 @@ void makeTreeDecodeHelper(struct node *branch){
 	// Case when left node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		*left = makeNode(nextChar, 0, 3, NULL, NULL, branch);
+		*left = makeNode(nextChar, 0, 1, NULL, NULL, branch);
 		branch->left = left;
 	}
 
@@ -125,7 +117,7 @@ void makeTreeDecodeHelper(struct node *branch){
 	// Case when right node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		*right = makeNode(nextChar, 0, 4, NULL, NULL, branch);
+		*right = makeNode(nextChar, 0, 2, NULL, NULL, branch);
 		branch->right = right;
 	}
 }

@@ -38,12 +38,12 @@ void prepend(char *string, char chr){
 void makeCode(struct node *node){
 	
 	// We must be at the root node, thus we're done
-	if(node->type == 0){
+	if(node->parent == NULL){
 		return;
 	}
 
 	// Node is a left node
-	if(node->type == 1 || node->type == 3){
+	if(node->type == 1){
 		prepend(codes + (codeLength * (int) currentChar), '0');
 
 	// Node is a right node
@@ -55,7 +55,7 @@ void makeCode(struct node *node){
 }
 
 void traverseTree(struct node *branch){
-	if(branch->type == 3 || branch->type == 4){
+	if(branch->left == NULL && branch->right == NULL){
 		currentChar = branch->symbol;
 		makeCode(branch);
 	}else{

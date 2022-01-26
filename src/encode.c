@@ -11,16 +11,16 @@
  */
 void encodeTree(struct node *branch){
 
-    // If current node is an internal node
-    if(branch->type == 0 || branch->type == 1 || branch->type == 2){
+    // If current node is a leaf
+    if(branch->left == NULL && branch->right == NULL){
+        writeBit(1);
+        writeChar(branch->symbol);
+    
+    // If current node is internal
+    }else{
         writeBit(0);
         encodeTree(branch->left);
         encodeTree(branch->right);
-    
-    // If current node is a leaf node
-    }else{
-        writeBit(1);
-        writeChar(branch->symbol);
     }
 }
 
