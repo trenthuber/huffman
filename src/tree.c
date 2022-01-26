@@ -16,10 +16,7 @@ void makeTreeEncodeHelper(struct node ***nodePointers){
 
 	// Setting up the new node
 	int newWeight = (*nodePointers)[tempLength - 1]->weight + (*nodePointers)[tempLength - 2]->weight;
-	struct node *newNode = (struct node *) malloc(sizeof(struct node));
-	if(newNode == NULL){mallocError("tree.c", 0);}
-
-	*newNode = makeNode('\0', newWeight, (unsigned char) 0, (*nodePointers)[tempLength - 1], (*nodePointers)[tempLength - 2], NULL);
+	struct node *newNode = makeNode('\0', newWeight, (unsigned char) 0, (*nodePointers)[tempLength - 1], (*nodePointers)[tempLength - 2], NULL);
 
 	// Setting up the rest of the nodes (parent nodes and which side they're on)
 
@@ -53,7 +50,7 @@ void makeTreeEncodeHelper(struct node ***nodePointers){
  */
 struct node *makeTreeEncode(void){
 	int *ints = (int *) malloc(ASCII_SIZE * sizeof(int));
-	if(ints == NULL){mallocError("tree.c", 1);}
+	if(ints == NULL){mallocError("tree.c", 0);}
 	for(int i = 0; i < ASCII_SIZE; i++){
 		ints[i] = 0;
 	}
@@ -85,23 +82,22 @@ struct node *makeTreeEncode(void){
  * constructing the tree in the same way it was encoded
  */
 void makeTreeDecodeHelper(struct node *branch){
-	struct node *left = malloc(sizeof(struct node));
-	struct node *right = malloc(sizeof(struct node));
-	if(left == NULL || right == NULL){mallocError("tree.c", 2);}
+	struct node *left;
+	struct node *right;
 
 	// Decode the LEFT branch
 	int nextBit = readBit();
 
 	// Case when left node is an internal node
 	if(nextBit == 0){
-		*left = makeNode('\0', 0, (unsigned char) 1, NULL, NULL, branch);
+		left = makeNode('\0', 0, (unsigned char) 1, NULL, NULL, branch);
 		branch->left = left;
 		makeTreeDecodeHelper(branch->left);
 	
 	// Case when left node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		*left = makeNode(nextChar, 0, (unsigned char) 1, NULL, NULL, branch);
+		left = makeNode(nextChar, 0, (unsigned char) 1, NULL, NULL, branch);
 		branch->left = left;
 	}
 
@@ -110,14 +106,14 @@ void makeTreeDecodeHelper(struct node *branch){
 
 	// Case when right node is an internal node
 	if(nextBit == 0){
-		*right = makeNode('\0', 0, (unsigned char) 2, NULL, NULL, branch);
+		right = makeNode('\0', 0, (unsigned char) 2, NULL, NULL, branch);
 		branch->right = right;
 		makeTreeDecodeHelper(branch->right);
 
 	// Case when right node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		*right = makeNode(nextChar, 0, (unsigned char) 2, NULL, NULL, branch);
+		right = makeNode(nextChar, 0, (unsigned char) 2, NULL, NULL, branch);
 		branch->right = right;
 	}
 }
@@ -133,9 +129,7 @@ struct node *makeTreeDecode(void){
 	}
 	
 	// Making the root node for the tree
-	struct node *root = malloc(sizeof(struct node));
-	if(root == NULL){mallocError("tree.c", 3);}
-	*root = makeNode('\0', 0, (unsigned char) 0, NULL, NULL, NULL);
+	struct node *root = makeNode('\0', 0, (unsigned char) 0, NULL, NULL, NULL);
 
 	// Making the rest of the tree
 	makeTreeDecodeHelper(root);

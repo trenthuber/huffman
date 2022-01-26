@@ -4,14 +4,15 @@
 
 #include "global/global.h"
 
-struct node makeNode(unsigned char symbol, int weight, unsigned char type, struct node *left, struct node *right, struct node *parent){
-	struct node newNode;
-	newNode.symbol = symbol;
-	newNode.weight = weight;
-	newNode.type = type;
-	newNode.left = left;
-	newNode.right = right;
-	newNode.parent = parent;
+struct node *makeNode(unsigned char symbol, int weight, unsigned char type, struct node *left, struct node *right, struct node *parent){
+	struct node *newNode = (struct node *) malloc(sizeof(struct node));
+	if(newNode == NULL){mallocError("node.c", 0);}
+	newNode->symbol = symbol;
+	newNode->weight = weight;
+	newNode->type = type;
+	newNode->left = left;
+	newNode->right = right;
+	newNode->parent = parent;
 	return newNode;
 }
 
@@ -47,8 +48,8 @@ void quicksortNodes(struct node **nodePointers, int start, int stop){
 
 // Creates a sorted array of pointers to nodes based on lists of chars and ints
 struct node **makeNodes(int *ints){
-	struct node *nodes = (struct node *) malloc(ASCII_SIZE * sizeof(struct node));
-	if(nodes == NULL){mallocError("node.c", 0);}
+	struct node **nodes = (struct node **) malloc(ASCII_SIZE * sizeof(struct node *));
+	if(nodes == NULL){mallocError("node.c", 1);}
 	
 	for(int i = 0; i < ASCII_SIZE; i++){
 		if(ints[i] != 0){
@@ -68,17 +69,9 @@ struct node **makeNodes(int *ints){
 		exit(-1);
 	}
 
-	/* It would be easier to sort and shift 8 byte pointers to nodes rather than
-	 * sorting and shifting 30 byte nodes themselves. At the expense of what is
-	 * relatively little memory, we increase runtime for this section almost
-	 * fourfold
-	 */
-	struct node **nodePointers = (struct node **) malloc(length * sizeof(struct node *));
-	if(nodePointers == NULL){mallocError("node.c", 1);}
-
-	for(int i = 0; i < length; i++){
-		*(nodePointers + i) = &nodes[i]; // Pointer arithmetic to the rescue!!!
-	}
+	// Reallocating the memory to fit the length of the code
+	struct node **nodePointers = realloc(nodes, length * sizeof(struct node *));
+	if(nodePointers == NULL){mallocError("node.c", 2);}
 
 	srand(time(NULL));
 	quicksortNodes(nodePointers, 0, length - 1);
