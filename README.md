@@ -34,7 +34,7 @@ huffman -d input.huf -o decompressed.txt
 
 All source code is in the `src` directory. Within `src` is a `global` directory containing source code used by the majority of the other files (just 
 to better distinguish them). `options.c` is only used by `main.c` to handle command line arguments. The compression and decompression source code is 
-split into seperate files (`encode.c` and `decode.c` respectively), but both files use `global` and `tree.c`.`table.c` is used exclusively by `encode.c`. `node.c` is used exclusively by `tree.c`.
+split into seperate files (`encode.c` and `decode.c` respectively), but both files use `global` and `tree.c`.`table.c` is used exclusively by `encode.c`. `node.c` and `heap.c` are used exclusively by `tree.c`.
 
 ## Scope of the Program
 
