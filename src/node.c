@@ -16,36 +16,6 @@ struct node *makeNode(unsigned char symbol, int weight, unsigned char type, stru
 	return newNode;
 }
 
-void swapNodes(struct node *one, struct node *two){
-	struct node *temp = one;
-	one = two;
-	two = temp;
-}
-
-int partitionNodes(struct node **nodes, int start, int stop){
-	int randInt = (rand() % (stop - start + 1)) + start;
-	swapNodes(nodes[randInt], nodes[stop]);
-	struct node *pivot = nodes[stop];
-
-	int i = start;
-	for(int j = i; j < stop; j++){
-		if(nodes[j]->weight > pivot->weight){
-			swapNodes(nodes[i], nodes[j]);
-			i++;
-		}
-	}
-	swapNodes(nodes[i], pivot);
-	return i;
-}
-
-void quicksortNodes(struct node **nodes, int start, int stop){
-	if(start < stop){
-		int pivot = partitionNodes(nodes, start, stop);
-		quicksortNodes(nodes, start, pivot - 1);
-		quicksortNodes(nodes, pivot + 1, stop);
-	}
-}
-
 // Creates a sorted array of pointers to nodes based on lists of chars and ints
 struct node **makeNodes(int *ints){
 	struct node **nodes = (struct node **) calloc(ASCII_SIZE, sizeof(struct node *));
@@ -72,9 +42,6 @@ struct node **makeNodes(int *ints){
 	// Reallocating the memory to fit the length of the code
 	nodes = realloc(nodes, length * sizeof(struct node *));
 	if(nodes == NULL){mallocError("node.c", 2);}
-
-	srand(time(NULL));
-	quicksortNodes(nodes, 0, length - 1);
 	
 	return nodes;
 }

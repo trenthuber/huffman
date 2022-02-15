@@ -50,7 +50,7 @@ void makeCode(struct node *node){
 	}
 
 	// Node is a left node
-	if(node->type == 1){
+	if(node->type == 0){
 		prepend(codes[(int) currentChar], '0');
 
 	// Node is a right node

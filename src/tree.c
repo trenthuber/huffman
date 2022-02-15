@@ -5,6 +5,7 @@
 #include "global/global.h"
 #include "global/fileio.h"
 #include "node.h"
+#include "heap.h"
 
 int tempLength;
 
@@ -14,43 +15,6 @@ void freeTree(struct node *branch){
 		freeTree(branch->right);
 		free(branch);
 	}
-}
-
-/* Removes the last two nodes from the list, creates a new node
- * that points to those two nodes with their combined weight, 
- * and then inserts this node back into the sorted list.
- */
-void makeTreeEncodeHelper(struct node ***nodesP){
-
-	// Setting up the new node
-	int newWeight = (*nodesP)[tempLength - 1]->weight + (*nodesP)[tempLength - 2]->weight;
-	struct node *newNode = makeNode('\0', newWeight, (unsigned char) 0, (*nodesP)[tempLength - 1], (*nodesP)[tempLength - 2], NULL);
-
-	// Setting up the rest of the nodes (parent nodes and which side they're on)
-
-	// Left node set up
-	(*nodesP)[tempLength - 1]->type = (unsigned char) 1;
-	(*nodesP)[tempLength - 1]->parent = newNode;
-
-	// Right node set up
-	(*nodesP)[tempLength - 2]->type = (unsigned char) 2;
-	(*nodesP)[tempLength - 2]->parent = newNode;
-
-	// Have the last pointer point to nothing since it's no longer used (for good measure)
-	(*nodesP)[tempLength - 1] = NULL;
-
-	// Place the new node in the sorted list
-	int end = 0;
-	if(tempLength > 1){
-		end = tempLength - 2;
-		while((end > 0) && ((*nodesP)[end - 1]->weight < newNode->weight)){
-			(*nodesP)[end] = (*nodesP)[end - 1]; // Actual shifting of the pointers
-			end--;
-		}
-	}
-
-	(*nodesP)[end] = newNode;
-	tempLength--; // Overall, the length of the list has been decreased by one
 }
 
 /* Converts list of characters and integers to a Huffman tree of nodes
@@ -73,14 +37,33 @@ struct node *makeTreeEncode(void){
 
 	free(ints);
 
-	// Creating Huffman tree from nodes
-	tempLength = length;
-	while(tempLength > 1){
-		makeTreeEncodeHelper(&nodes); // Pass by reference
+	// Adds every node to a heap
+	struct heap *heap = makeHeap();
+	for(int i = 0; i < length; i++){
+		insert(heap, nodes[i]);
+	}
+
+	/* Removes the two smallest elements of the heap, creates a new 
+	 * tree with those elements, and adds it back to the heap
+	 */
+	for(int i = 0; i < length - 1; i++){
+		struct node *first = delMin(heap);
+		struct node *second = delMin(heap);
+		struct node *newNode = makeNode('\0', first->weight + second->weight, (unsigned char) 0, first, second, NULL);
+
+		first->parent = newNode;
+		second->parent = newNode;
+
+		/* Designate the right node by changing the type (left node
+		 * is the default type, so there's no need to change it again)
+		 */
+		second->type = (unsigned char) 1;
+
+		insert(heap, newNode);
 	}
 
 	// Returns the root node of the tree
-	return nodes[0];
+	return (heap->array)[0];
 }
 
 /* Does the actual decoding by reading the file and recursively
@@ -95,14 +78,14 @@ void makeTreeDecodeHelper(struct node *branch){
 
 	// Case when left node is an internal node
 	if(nextBit == 0){
-		left = makeNode('\0', 0, (unsigned char) 1, NULL, NULL, branch);
+		left = makeNode('\0', 0, (unsigned char) 0, NULL, NULL, branch);
 		branch->left = left;
 		makeTreeDecodeHelper(branch->left);
 	
 	// Case when left node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		left = makeNode(nextChar, 0, (unsigned char) 1, NULL, NULL, branch);
+		left = makeNode(nextChar, 0, (unsigned char) 0, NULL, NULL, branch);
 		branch->left = left;
 	}
 
@@ -111,14 +94,14 @@ void makeTreeDecodeHelper(struct node *branch){
 
 	// Case when right node is an internal node
 	if(nextBit == 0){
-		right = makeNode('\0', 0, (unsigned char) 2, NULL, NULL, branch);
+		right = makeNode('\0', 0, (unsigned char) 1, NULL, NULL, branch);
 		branch->right = right;
 		makeTreeDecodeHelper(branch->right);
 
 	// Case when right node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		right = makeNode(nextChar, 0, (unsigned char) 2, NULL, NULL, branch);
+		right = makeNode(nextChar, 0, (unsigned char) 1, NULL, NULL, branch);
 		branch->right = right;
 	}
 }

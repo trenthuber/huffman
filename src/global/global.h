@@ -7,7 +7,7 @@ struct node{
 	unsigned char symbol;
 	int weight;
 
-	// 1 for left, 2 for right (0 for nodes with no type)
+	// 0 for left, 1 for right
 	unsigned char type;
 
 	struct node *left;
@@ -15,6 +15,12 @@ struct node{
 
 	// Used to traverse up the tree when finding the codes
 	struct node *parent;
+};
+
+// Used only in the encode process for a nice overall O(nlogn) time
+struct heap{
+	struct node **array;
+	int size;
 };
 
 extern int length;
