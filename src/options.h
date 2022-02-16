@@ -2,6 +2,6 @@
 #define OPTIONS
 
 extern void printHelpMessage(void);
-extern int handleOptions(int argc, char *argv[]);
+extern int handleOptions(int argc, char **argv);
 
 #endif
