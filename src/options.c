@@ -5,12 +5,6 @@
 
 #include "global/global.h"
 
-// Flags for input, output, and decode (true = 1)
-int iflag, oflag, dflag; // Automatically set to 0 since they're global
-
-// Strings of the filenames (for filename error detection)
-char *inputFN, *outputFN;
-
 void printHelpMessage(void){
     printf(
         "huffman, version 1.0\n\n"
@@ -22,6 +16,14 @@ void printHelpMessage(void){
 }
 
 int handleOptions(int argc, char **argv){
+    
+    // Flags for input, output, and decode (true = 1)
+    int iflag, oflag, dflag;
+    iflag = oflag = dflag = 0;
+
+    // Strings of the filenames (for filename error detection)
+    char *inputFN, *outputFN;
+    
     int opt;
 
     /* This variable is here to make sure this works both with the BSD (macOS) 
