@@ -17,7 +17,7 @@ void printHelpMessage(void){
 
 int handleOptions(int argc, char **argv){
     
-    // Flags for input, output, and decode (true = 1)
+    // Flags for input, output, and decode (default is false)
     int iflag, oflag, dflag;
     iflag = oflag = dflag = 0;
 
