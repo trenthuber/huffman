@@ -23,6 +23,7 @@ int handleOptions(int argc, char **argv){
 
     // Strings of the filenames (for filename error detection)
     char *inputFN, *outputFN;
+	inputFN = outputFN = "";
     
     int opt;
 
