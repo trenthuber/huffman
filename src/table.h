@@ -2,11 +2,11 @@
 #define TABLE
 
 extern char *codes;
-extern unsigned char currentChar;
+extern char *prefix;
 
 extern void freeTable(char **codes);
-extern void prepend(char *string, char chr);
-extern void makeCode(struct node *node);
+
+extern void makeTableHelper(struct node *branch);
 extern char **makeTable(struct node *root);
 
 #endif

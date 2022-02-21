@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "global/global.h"
 
 char **codes;
-unsigned char currentChar;
+char *prefix;
 
 void freeTable(char **codes){
 	for(int i = 0; i < length; i++){
@@ -14,61 +15,20 @@ void freeTable(char **codes){
 	free(codes);
 }
 
-// Adds a char to the beginning of a string
-void prepend(char *string, char chr){
-	char *temp = string;
-
-	// Find null terminating character
-	while(*temp != '\0'){
-		temp++;
-	}
-
-	// Shift each character to the right
-	while(temp != string){
-		char *current = temp + 1;
-		*current = *temp;
-		temp--;
-	}
-	char *current = temp + 1;
-	*current = *temp;
-
-	// Insert chr at beginning
-	*temp = chr;
-}
-
-/* Given a node in a Huffman tree, this function uses the
- * parent nodes of each node to traverse it's way back up
- * tree to the root node. It takes this information as well
- * as the node type identifier to insert a string of '1's
- * and '0's into an array of strings.
- */
-void makeCode(struct node *node){
-
-	// We must be at the root node, thus we're done
-	if(node->parent == NULL){
+void makeTableHelper(struct node *branch){
+	if(branch->left == NULL){
+		strcpy(codes[(int) branch->symbol], prefix);
 		return;
 	}
 
-	// Node is a left node
-	if(node->type == 0){
-		prepend(codes[(int) currentChar], '0');
+	int index = strlen(prefix);
+	prefix[index] = '0';
+	prefix[index + 1] = '\0';
+	makeTableHelper(branch->left);
 
-	// Node is a right node
-	}else{
-		prepend(codes[(int) currentChar], '1');
-	}
-
-	makeCode(node->parent);
-}
-
-void traverseTree(struct node *branch){
-	if(branch->left == NULL && branch->right == NULL){
-		currentChar = branch->symbol;
-		makeCode(branch);
-	}else{
-		traverseTree(branch->left);
-		traverseTree(branch->right);
-	}
+	prefix[index] = '1';
+	prefix[index + 1] = '\0';
+	makeTableHelper(branch->right);
 }
 
 /* Takes the root node of the Huffman tree as input. Produces an array of strings
@@ -78,6 +38,8 @@ void traverseTree(struct node *branch){
 char **makeTable(struct node *root){
 
 	codeLength = (int) ceil(log2((double) fileSize + 1)) + 1; // +1 for the null character at the end
+	prefix = (char *) malloc(codeLength * sizeof(char));
+	prefix[0] = '\0'; // Make sure the prefix is empty before using it
 
 	// Allocate memory for pointers to strings
 	codes = (char **) calloc(ASCII_SIZE, sizeof(char *));
@@ -90,7 +52,7 @@ char **makeTable(struct node *root){
 		codes[i][0] = '\0';
 	}
 
-	traverseTree(root);
+	makeTableHelper(root);
 
 	return codes;
 }

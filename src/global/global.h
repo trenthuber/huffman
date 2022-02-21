@@ -12,9 +12,6 @@ struct node{
 
 	struct node *left;
 	struct node *right;
-
-	// Used to traverse up the tree when finding the codes
-	struct node *parent;
 };
 
 // Used only in the encode process for a nice overall O(nlogn) time
@@ -26,6 +23,7 @@ struct heap{
 extern int length;
 extern int fileSize;
 extern int codeLength;
+
 extern FILE *input;
 extern FILE *output;
 

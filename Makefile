@@ -1,4 +1,4 @@
-.PHONY: bin clean uninstall
+.PHONY: clean uninstall
 
 CC = gcc
 CFLAGS = -O3 -Wall -Wextra

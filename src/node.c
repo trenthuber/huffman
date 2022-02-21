@@ -4,7 +4,7 @@
 
 #include "global/global.h"
 
-struct node *makeNode(unsigned char symbol, int weight, unsigned char type, struct node *left, struct node *right, struct node *parent){
+struct node *makeNode(unsigned char symbol, int weight, unsigned char type, struct node *left, struct node *right){
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
 	if(newNode == NULL){mallocError("node.c", 0);}
 	newNode->symbol = symbol;
@@ -12,7 +12,6 @@ struct node *makeNode(unsigned char symbol, int weight, unsigned char type, stru
 	newNode->type = type;
 	newNode->left = left;
 	newNode->right = right;
-	newNode->parent = parent;
 	return newNode;
 }
 
@@ -28,7 +27,7 @@ struct node **makeNodes(int *ints){
 			 * end of the list so far, and also leaving it as it's value for
 			 * the rest of the encode process
 			 */
-			nodes[length] = makeNode((unsigned char) i, ints[i], (unsigned char) 0, NULL, NULL, NULL);
+			nodes[length] = makeNode((unsigned char) i, ints[i], (unsigned char) 0, NULL, NULL);
 			length++;
 		}
 	}
