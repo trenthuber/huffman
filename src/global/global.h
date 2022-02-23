@@ -7,9 +7,6 @@ struct node{
 	unsigned char symbol;
 	int weight;
 
-	// 0 for left, 1 for right
-	unsigned char type;
-
 	struct node *left;
 	struct node *right;
 };

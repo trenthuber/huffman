@@ -49,12 +49,7 @@ struct node *makeTreeEncode(void){
 	for(int i = 0; i < length - 1; i++){
 		struct node *first = delMin(heap);
 		struct node *second = delMin(heap);
-		struct node *newNode = makeNode('\0', first->weight + second->weight, (unsigned char) 0, first, second);
-
-		/* Designate the right node by changing the type (left node
-		 * is the default type, so there's no need to change it again)
-		 */
-		second->type = (unsigned char) 1;
+		struct node *newNode = makeNode('\0', first->weight + second->weight, first, second);
 
 		insert(heap, newNode);
 	}
@@ -75,14 +70,14 @@ void makeTreeDecodeHelper(struct node *branch){
 
 	// Case when left node is an internal node
 	if(nextBit == 0){
-		left = makeNode('\0', 0, (unsigned char) 0, NULL, NULL);
+		left = makeNode('\0', 0, NULL, NULL);
 		branch->left = left;
 		makeTreeDecodeHelper(branch->left);
 	
 	// Case when left node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		left = makeNode(nextChar, 0, (unsigned char) 0, NULL, NULL);
+		left = makeNode(nextChar, 0, NULL, NULL);
 		branch->left = left;
 	}
 
@@ -91,14 +86,14 @@ void makeTreeDecodeHelper(struct node *branch){
 
 	// Case when right node is an internal node
 	if(nextBit == 0){
-		right = makeNode('\0', 0, (unsigned char) 1, NULL, NULL);
+		right = makeNode('\0', 0, NULL, NULL);
 		branch->right = right;
 		makeTreeDecodeHelper(branch->right);
 
 	// Case when right node is a leaf node
 	}else{
 		unsigned char nextChar = readChar();
-		right = makeNode(nextChar, 0, (unsigned char) 1, NULL, NULL);
+		right = makeNode(nextChar, 0, NULL, NULL);
 		branch->right = right;
 	}
 }
@@ -114,7 +109,7 @@ struct node *makeTreeDecode(void){
 	}
 	
 	// Making the root node for the tree
-	struct node *root = makeNode('\0', 0, (unsigned char) 0, NULL, NULL);
+	struct node *root = makeNode('\0', 0, NULL, NULL);
 
 	// Making the rest of the tree
 	makeTreeDecodeHelper(root);
