@@ -4,6 +4,7 @@
 int length = 0;
 int fileSize = 0;
 int codeLength = 0;
+
 FILE *input = NULL;
 FILE *output = NULL;
 

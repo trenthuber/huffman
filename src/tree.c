@@ -54,8 +54,10 @@ struct node *makeTreeEncode(void){
 		insert(heap, newNode);
 	}
 
-	// Returns the root node of the tree
-	return (heap->array)[0];
+	// Returns the root node of the tree while also freeing the heap
+	struct node *root = heap->array[0];
+	freeHeap(heap);
+	return root;
 }
 
 /* Does the actual decoding by reading the file and recursively

@@ -51,13 +51,13 @@ If most of the bytes happen with the same frequency, all the bytes will have (mo
 ### Compressing (Encoding)
 The compression algorithm is significantly more complicated than the decompression algorithm. There are four steps:
 1. Create a [heap](https://en.wikipedia.org/wiki/Heap_(data_structure)) of nodes based on their frequencies for every character used in the file (`heap.c`)
-2. Make a Huffman tree of the nodes in the heap (`tree.c`)
-3. From the tree, create a table of values that contains the Huffman codes for each character (`table.c`)
+2. Make a Huffman tree from the nodes in the heap (`tree.c`)
+3. From that tree, create a table of values that contains the Huffman codes for each character (`table.c`)
 4. Write to a new file replacing the characters of the input file with their respective Huffman codes (`encode.c`)
 
 To create the heap, I started by going through the file and counting how many times each character appeared (by character, I mean *any* byte). This list is then converted into a list of nodes (using `node.c`) and then added to the heap with the element with the smallest weight at the top (weight being frequency in the input file).
 
-From this, I took the top two elements of the heap (the two smallest elements in the current list) and created a new node with those two nodes as left and right children. I also summed their weights which became the new weight of the new node. This new node I then inserted back into the heap. This process was repeated until there was one node left. This final node is the completed Huffman tree.
+From this, I took the top two elements of the heap (the two smallest elements in the current list) and created a new node with those two nodes as left and right children. I also summed their weights which became the new weight of the new node. I then inserted the new node back into the heap and repeated this until there was only one node left. This final node in the heap is the completed Huffman tree.
 
 Taking this tree and turning it into a table of values was actually easy with recursion. I started by creating an array of strings that would contain a code for each character. One of the issues I was having at first was that I couldn't store the code for the null character in a string since strings always end with the null terminating character. So instead of including the character in the string of 1's and 0's, I placed the code at that character's corresponding number position in the array (so the code corresponding to `'a'` goes in `codes[97]`). 
 
@@ -73,6 +73,6 @@ The easier of the two, decompressing the data simply consists of two steps:
 1. Reconstructing the tree (`tree.c`)
 2. Decoding the rest of the message (`decode.c`)
 
-To reconstruct the tree, I used a "mirror" to the method I used to encode the tree in `encode.c` in which I simply read in the bits (which also required writing functions to **read** bits, as well as write them in `fileio.c`) and construct the tree as I see the bits come in. Once the tree is built and the function is returned, I simply traverse the tree as the rest of the file tells me to ("0" for left, "1" for right). Every time I hit a leaf node, I write it to the file and set the node pointer to the root node again.
+To reconstruct the tree, I mirrored to the method I used to encode the tree in `encode.c` in which I simply read in the bits (which also required writing functions to **read** bits as well as write them in `fileio.c`) and reconstruct the tree as I see the bits come in. Once the tree is built and the function is returned, I simply traverse the tree as the rest of the file tells me to ("0" for left, "1" for right). Every time I hit a leaf node, I write it to the file and set the node pointer to the root node again.
 
 The only part that took some thought was the very last byte. It's not likely that the encoded bits will be a multiple of 8, so you're going to have to add some padding to the end of the last byte written. So, how do I tell the decoder what's padding and what's not? I decided to use a bit change to indicate that. After the last bit is written, I write a "1" and then the rest of the byte is "0"s padding. When decoding, the decoder reads the last byte from the end until it encounters a "1". Then it knows the bit before that one is the last one. The only edge case is when we actually don't need padding at all: then we have to write an entire byte to the end of the file. Although slightly unfortunate, I couldn't think of any better methods.

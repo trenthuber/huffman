@@ -11,6 +11,11 @@ struct heap *makeHeap(void){
     return newHeap;
 }
 
+void freeHeap(struct heap *heap){
+    free(heap->array);
+    free(heap);
+}
+
 void swap(struct heap *heap, int parentIndex, int childIndex){
     struct node *temp = (heap->array)[parentIndex];
     (heap->array)[parentIndex] = (heap->array)[childIndex];

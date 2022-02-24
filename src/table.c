@@ -8,13 +8,6 @@
 char **codes;
 char *prefix;
 
-void freeTable(char **codes){
-	for(int i = 0; i < length; i++){
-		free(codes[i]);
-	}
-	free(codes);
-}
-
 void makeTableHelper(struct node *branch){
 	if(branch->left == NULL){
 		strcpy(codes[(int) branch->symbol], prefix);
@@ -55,4 +48,11 @@ char **makeTable(struct node *root){
 	makeTableHelper(root);
 
 	return codes;
+}
+
+void freeTable(char **codes){
+	for(int i = 0; i < length; i++){
+		free(codes[i]);
+	}
+	free(codes);
 }
