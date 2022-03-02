@@ -9,14 +9,6 @@
 
 int tempLength;
 
-void freeTree(struct node *branch){
-	if(branch != NULL){
-		freeTree(branch->left);
-		freeTree(branch->right);
-		free(branch);
-	}
-}
-
 /* Converts list of characters and integers to a Huffman tree of nodes
  * that consist of these characters and their frequency
  */
@@ -117,4 +109,12 @@ struct node *makeTreeDecode(void){
 	makeTreeDecodeHelper(root);
 	
 	return root;
+}
+
+void freeTree(struct node *branch){
+	if(branch != NULL){
+		freeTree(branch->left);
+		freeTree(branch->right);
+		free(branch);
+	}
 }

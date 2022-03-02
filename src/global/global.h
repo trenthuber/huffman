@@ -1,8 +1,7 @@
 #ifndef GLOBAL
 #define GLOBAL
 
-#define ASCII_SIZE 256 // Number of different types of bytes
-
+#define ASCII_SIZE 256 // Number of unique bytes
 struct node{
 	unsigned char symbol;
 	int weight;
@@ -11,7 +10,6 @@ struct node{
 	struct node *right;
 };
 
-// Used only in the encode process for a nice overall O(nlogn) time
 struct heap{
 	struct node **array;
 	int size;
