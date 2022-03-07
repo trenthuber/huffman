@@ -1,22 +1,14 @@
 #ifndef FILEIO
 #define FILEIO
 
-extern unsigned char mask;
-extern int bufferSize;
-extern unsigned char buffer;
-
-extern unsigned char nextBuffer;
-extern int endOfFile;
-
-extern void setUpBuffersRead(void);
-
-extern void checkBufferWrite(void);
-extern int checkBufferRead(void);
-
+// Encode functions
+extern int getBufferSize(void);
 extern void writeBit(int bit);
-extern int readBit(void);
-
 extern void writeChar(unsigned char uchar);
+
+// Decode functions
+extern void checkFileRead(void);
+extern int readBit(void);
 extern unsigned char readChar(void);
 
 #endif

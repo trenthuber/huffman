@@ -5,6 +5,8 @@
 
 #include "global/global.h"
 
+#include "options.h"
+
 void printHelpMessage(void){
     printf(
         "huffman, version 1.0\n\n"

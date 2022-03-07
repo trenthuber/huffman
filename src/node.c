@@ -4,6 +4,8 @@
 
 #include "global/global.h"
 
+#include "node.h"
+
 struct node *makeNode(unsigned char symbol, int weight, struct node *left, struct node *right){
 	struct node *newNode = (struct node *) malloc(sizeof(struct node));
 	if(newNode == NULL){mallocError("node.c", 0);}

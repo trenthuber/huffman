@@ -7,6 +7,8 @@
 #include "node.h"
 #include "heap.h"
 
+#include "tree.h"
+
 int tempLength;
 
 /* Converts list of characters and integers to a Huffman tree of nodes
@@ -96,7 +98,7 @@ void makeTreeDecodeHelper(struct node *branch){
  * Huffman tree to be used to decode the output file
  */
 struct node *makeTreeDecode(void){
-	setUpBuffersRead();
+	checkFileRead();
 	if(readBit() != 0){ // First bit should always be 0 since every tree starts with a root node
 		fprintf(stderr, "huffman: Can't decode, invalid first byte\n");
 		exit(-1);

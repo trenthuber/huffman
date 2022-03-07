@@ -6,6 +6,8 @@
 #include "tree.h"
 #include "table.h"
 
+#include "encode.h"
+
 /* Recursively traverses the Huffman tree, writing 
  * a 0 for a parent node and a 1 for a leaf node
  */
@@ -38,7 +40,7 @@ void encodeFile(struct node *root){
 
 	// Padding for the last byte
     writeBit(1);
-    int numZeros = (8 - bufferSize) % 8;
+    int numZeros = (8 - getBufferSize()) % 8;
     for(int i = 0; i < numZeros; i++){
         writeBit(0);
     }

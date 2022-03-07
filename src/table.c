@@ -5,6 +5,8 @@
 
 #include "global/global.h"
 
+#include "tree.h"
+
 char **codes;
 char *prefix;
 

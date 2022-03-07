@@ -4,6 +4,8 @@
 
 #include "global/global.h"
 
+#include "heap.h"
+
 struct heap *makeHeap(void){
     struct heap *newHeap = (struct heap *) malloc(sizeof(struct heap));
     newHeap->array = (struct node **) calloc(length, sizeof(struct node *));

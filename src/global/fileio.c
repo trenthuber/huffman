@@ -4,6 +4,8 @@
 
 #include "global.h"
 
+#include "fileio.h"
+
 unsigned char mask = 0b10000000; // Read buffer from left to right
 int bufferSize = 0; // Assume buffer is empty to start
 unsigned char buffer;
@@ -12,7 +14,16 @@ unsigned char buffer;
 unsigned char nextBuffer;
 int endOfFile = 0;
 
-void setUpBuffersRead(void){
+// Allows user to access the bufferSize without altering it (used in encode.c)
+int getBufferSize(void){
+    return bufferSize;
+}
+
+/* Checks that the input file is large enough to decode in the first place 
+ * (a decoded file is always larger than 2 bytes, so this will never sift
+ * out a validly enoded file)
+ */
+void checkFileRead(void){
     int intBuffer = fgetc(input);
     int intNextBuffer = fgetc(input); // Character after buffer
 
@@ -26,17 +37,6 @@ void setUpBuffersRead(void){
     nextBuffer = (unsigned char) intNextBuffer;
 
     bufferSize = 8; // Buffer is now full
-}
-
-/* Checks if the buffer has reached the bufferSize. If it has,
- * it "empties" the buffer by writing whatever character is in
- * it to the output file
- */
-void checkBufferWrite(void){
-    if(bufferSize == 8){
-        fwrite(&buffer, 1, 1, output);
-        bufferSize = 0; // Buffer is now empty
-    }
 }
 
 /* Checks if the bufferSize is above 0. If it's not, it reads in
@@ -95,7 +95,10 @@ void writeBit(int bit){
     bufferSize++;
 
     // Check if the bit we just wrote pushed the buffer over the bufferSize
-    checkBufferWrite();
+    if(bufferSize == 8){
+        fwrite(&buffer, 1, 1, output);
+        bufferSize = 0; // Buffer is now empty
+    }
 }
 
 int readBit(void){

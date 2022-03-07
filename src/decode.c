@@ -4,6 +4,8 @@
 #include "global/fileio.h"
 #include "tree.h"
 
+#include "decode.h"
+
 void decode(void){
 	struct node *root = makeTreeDecode();
 	struct node *nodeP = root; // Used as a pointer to various nodes
