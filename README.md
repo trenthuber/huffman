@@ -96,4 +96,4 @@ The only part that took some thought was the very last byte. It's not likely tha
 
 ## License
 
-See `LICENSE` file for license rights and limitations.
+See [LICENSE](./LICENSE) file for license rights and limitations.
