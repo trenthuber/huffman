@@ -4,10 +4,12 @@
 # Ignore Windows system
 Thumbs.db
 [Dd]esktop.ini
+*~
 
 # Ignore Visual Studio Code files
 .vscode/
 
 # Any files that are used for testing
+*.o
 *.huf
 *.txt

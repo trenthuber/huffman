@@ -11,7 +11,9 @@ LOCAL = /usr/local/bin
 all: bin huffman
 
 ifeq ($(OS), Windows_NT)
+
 OBJWIN = $(subst /,\,$(OBJ))
+
 bin:
 	mkdir $(BIN)
 
@@ -57,4 +59,3 @@ uninstall:
 	rm -f $(LOCAL)/huffman
 
 endif
-

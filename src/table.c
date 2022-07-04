@@ -12,7 +12,11 @@ char *prefix;
 
 void makeTableHelper(struct node *branch){
 	if(branch->left == NULL){
+		#if _WIN64
+		strcpy_s(codes[(int) branch->symbol], codeLength, prefix);
+		#else
 		strcpy(codes[(int) branch->symbol], prefix);
+		#endif
 		return;
 	}
 

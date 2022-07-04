@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "global/global.h"
@@ -102,6 +101,7 @@ int handleOptions(int argc, char **argv){
 
     // The OS is Mac or Linux
     #elif __MACH__ || __linux__
+    #include <unistd.h>
 
     // Flags for input and output (default is false)
     int iflag, oflag;
