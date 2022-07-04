@@ -12,6 +12,9 @@ all: bin huffman
 
 ifeq ($(OS), Windows_NT)
 
+# Used to supress the main
+CFLAGS := $(CFLAGS) -Wno-unused-parameter
+
 OBJWIN = $(subst /,\,$(OBJ))
 
 bin:

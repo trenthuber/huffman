@@ -22,6 +22,11 @@ int handleOptions(int argc, char **argv){
 
     // The OS is Windows
     #ifdef _WIN64
+
+    // These parameters aren't used in the Windows options code
+    (void) argc;
+    (void) argv;
+    
     char inputFN[260], outputFN[260];
 
     printf("Huffman Coding Text Compression Utility\n\n");
