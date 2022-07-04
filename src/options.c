@@ -21,7 +21,8 @@ int handleOptions(int argc, char **argv){
 
     int dflag = 0;
 
-    #ifdef _WIN64 // If the OS is Windows
+    // The OS is Windows
+    #ifdef _WIN64
     char inputFN[260], outputFN[260];
 
     printf("Huffman Coding Text Compression Utility\n\n");
@@ -99,23 +100,22 @@ int handleOptions(int argc, char **argv){
         }
     }
 
-    #else // OS is not Windows
+    // The OS is Mac or Linux
+    #elif __MACH__ || __linux__
 
     // Flags for input and output (default is false)
     int iflag, oflag;
     iflag = oflag = 0;
+    int opt = 0;
 
     // Strings of the filenames (for filename error detection)
     char *inputFN, *outputFN;
 	inputFN = outputFN = "";
     
-    int opt = 0;
-
-    #if defined __MACH__
-    /* The way that macOS uses getopt(), it returns a -1 if it gets an option not in 
-     * optstring, but will also return a -1 if it gets to the end of the options. So,
-     * we need to manually keep track of when we get to the end of the options with
-     * argvIndex
+    /* As far as I can understand, the getopt() function returns -1 both in the case 
+     * of getting an option not in the optstring and when it finishes the options. 
+     * For this reason, I'm manually keeping track of the index of the argv array with 
+     * the argvIndex variable
      */
     int argvIndex = 1;
 
@@ -148,7 +148,6 @@ int handleOptions(int argc, char **argv){
                 break;
             
             // Something went wrong
-            case '?':
             case -1:
                 if(iflag == 0){
                     iflag = 1;
@@ -165,55 +164,6 @@ int handleOptions(int argc, char **argv){
         }
         argvIndex++;
     }
-
-    #elif defined __linux__
-    while((opt = getopt(argc, argv, ":hdo:")) != -1){
-        switch(opt){
-
-        // Print help message
-        case 'h':
-            printHelpMessage();
-            exit(0);
-
-        // Assign output file
-        case 'o':
-
-            // Checks to see if it has already assigned an output file
-            if(oflag == 0){
-                outputFN = optarg;
-                oflag = 1;
-                argvIndex++;
-            }else{
-                fprintf(stderr, "huffman: can only output to one file at a time\n");
-                exit(-1);
-            }
-            break;
-
-        // Sets the decode flag to true
-        case 'd':
-            dflag = 1;
-            break;
-        
-        // Something went wrong
-        case ':':
-            fprintf(stderr, "huffman: missing an argument")
-        case '?':
-        default:
-            if(iflag == 0){
-                iflag = 1;
-                inputFN = argv[optind];
-            }else{
-                fprintf(stderr, "huffman: can only take input from one file, please check options\n");
-                exit(-1);
-            }
-        }
-    }
-
-    #else
-    printf("huffman: supported operating system not detected (options.c, 0)\n");
-    exit(-1);
-
-    #endif
 
     // Checks if there are no input files provided
     if(iflag == 0){
@@ -269,6 +219,10 @@ int handleOptions(int argc, char **argv){
 		exit(-1);
 	}
 
+    // The OS is unsupported
+    #else
+    printf("huffman: supported operating system not detected (options.c, 0)\n");
+    exit(-1);
     #endif
 
     // We return the decode flag so main() can know what function to call
