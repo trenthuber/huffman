@@ -14,9 +14,26 @@ The `make` command will make the binary in a newly created `bin` directory.
 The command `sudo make install clean` will install the binary to `/usr/local/bin`. To uninstall the command, use `sudo make clean uninstall`.
 
 ### For Windows:
-Check out the `windows` branch of this project for code that has been tweaked to run on Windows. There is also a `huffman.exe` executable file under the release for this project that should be plug and play on Windows.
+Installing the utility directly from the source code is a pain, so it's recommended you just download the `huffman.exe` program under the Release for this utility.
 
-You could also try cloning the main branch into WSL.
+If you *hate* yourself and want to install it from source code, you're on your own. You need the C standard library, the `make` command, and a C compiler installed on your system. Personally, I used [Visual Studio](https://visualstudio.microsoft.com/downloads/) (Community Edition is free) to install the C/C++ library and used the Windows package manager [Chocolatey](https://chocolatey.org/install) to install both the `make` and `clang` (a C compiler native to Windows) command that I could use from a command line.
+
+Depending on the C compiler you've downloaded, you're probably going to have to change the `CC` in the [Makefile](./Makefile). The default is `cc` (as it's the only POSIX compliant C compiler), but I don't know of a way to install `cc` on Windows.
+
+To compile the binary, simply type `make` and the binary will be generated in the `bin\` folder. To install the binary on the system, you first need to open a Windows temrinal with administrator access (simply Control+Shift+Click on the icon), then type `make install clean`.
+
+The command will now be in your user path and installed to the `C:\Program Files\Huffman\` directory (the installation directory can be changed in the [Makefile](./Makefile)). 
+
+###### Note: You'll probably need to restart the Terminal program in order for the path variable to be updated.
+
+To uninstall the utility, simply type (in the directory the [Makefile](./Makefile) is in):
+```
+make uninstall
+```
+
+This will remove the directory the program is in as well as update the path variable (see previous note).
+
+Trying to `make install` or `make uninstall` mulitple times will cause errors, but won't harm the system in any way.
 
 ## Using the Command
 
@@ -34,7 +51,7 @@ huffman -d input.huf -o decompressed.txt
 
 ## Code Organization
 
-All source code is in the `src/` directory. Within `src/` is a `global/` directory containing source code used by the majority of the other files (just to better distinguish them). `options.c` is only used by `main.c` to handle command line arguments. The compression and decompression source code is split into seperate files (`encode.c` and `decode.c` respectively), but both files use `global/` and `tree.c`.`table.c` is used exclusively by `encode.c`. `node.c` and `heap.c` are used exclusively by `tree.c`.
+All source code is in the [src/](./src/) directory. Within [src/](./src/) is a [global/](./src/global/) directory containing source code used by the majority of the other files (just to better distinguish them). [options.c](./src/options.c) is only used by [main.c](./src/main.c) to handle command line arguments. The compression and decompression source code is split into seperate files ([encode.c](./src/encode.c) and [decode.c](./src/decode.c) respectively), but both files use [global/](./src/global/) and [tree.c](./src/tree.c).[table.c](./src/table.c) is used exclusively by [encode.c](./src/encode.c). [node.c](./src/node.c) and [heap.c](./src/heap.c) are used exclusively by [tree.c](./src/tree.c).
 
 ## Scope of the Program
 
@@ -50,12 +67,12 @@ If most of the bytes happen with the same frequency, all the bytes will have (mo
 
 ### Compressing (Encoding)
 The compression algorithm is significantly more complicated than the decompression algorithm. There are four steps:
-1. Create a [heap](https://en.wikipedia.org/wiki/Heap_(data_structure)) of nodes based on their frequencies for every character used in the file (`heap.c`)
-2. Make a Huffman tree from the nodes in the heap (`tree.c`)
-3. From that tree, create a table of values that contains the Huffman codes for each character (`table.c`)
-4. Write to a new file replacing the characters of the input file with their respective Huffman codes (`encode.c`)
+1. Create a [heap](https://en.wikipedia.org/wiki/Heap_(data_structure)) of nodes based on their frequencies for every character used in the file ([heap.c](./src/heap.c))
+2. Make a Huffman tree from the nodes in the heap ([tree.c](./src/tree.c))
+3. From that tree, create a table of values that contains the Huffman codes for each character ([table.c](./src/table.c))
+4. Write to a new file replacing the characters of the input file with their respective Huffman codes ([encode.c](./src/encode.c))
 
-To create the heap, I started by going through the file and counting how many times each character appeared (by character, I mean *any* byte). This list is then converted into a list of nodes (using `node.c`) and then added to the heap with the element with the smallest weight at the top (weight being frequency in the input file).
+To create the heap, I started by going through the file and counting how many times each character appeared (by character, I mean *any* byte). This list is then converted into a list of nodes (using [node.c](./src/node.c)) and then added to the heap with the element with the smallest weight at the top (weight being frequency in the input file).
 
 From this, I took the top two elements of the heap (the two smallest elements in the current list) and created a new node with those two nodes as left and right children. I also summed their weights which became the new weight of the new node. I then inserted the new node back into the heap and repeated this until there was only one node left. This final node in the heap is the completed Huffman tree.
 
@@ -63,16 +80,20 @@ Taking this tree and turning it into a table of values was actually easy with re
 
 After creating the array, I used recursion to take the code for the internal node above the current node and turn that into the current node's code. Once we get down to a leaf node, we copy that final code over to the corresponding position in the string array for the codes.
 
-While encoding the file (now that I had a list of codes) was the conceptually easier part, I found it to be the more technically challenging part. In C, you can't write single bits to a file (in fact, I don't know of a single programming language that allows you to do that, probably some archaic ones). In fact, the smallest unit of data you can write to a file is bytes (with the fputc() function, or something of the sort). My solution to this was to create an `unsigned char` variable to act as a "buffer". In `fileio.c`, I made functions that would write these bits to the buffer instead and then (when the buffer was full) write the buffer to the file. I utilized bit shifting and bit masking to accomplish this goal, and the end result worked surprisingly well with few bugs.
+While encoding the file (now that I had a list of codes) was the conceptually easier part, I found it to be the more technically challenging part. In C, you can't write single bits to a file (in fact, I don't know of a single programming language that allows you to do that, probably some archaic ones). In fact, the smallest unit of data you can write to a file is bytes (with the fputc() function, or something of the sort). My solution to this was to create an `unsigned char` variable to act as a "buffer". In [fileio.c](./src/global/fileio.c), I made functions that would write these bits to the buffer instead and then (when the buffer was full) write the buffer to the file. I utilized bit shifting and bit masking to accomplish this goal, and the end result worked surprisingly well with few bugs.
 
-The final thing I had to figure out was how to format the compressed file. By this I mean, it's not good enough to just have the converted bits, you need to also encode the tree itself so the decompressor can rebuild the `.txt` file. I chose to go with a method outlined in the (aforementioned) [Wikipedia article](https://en.wikipedia.org/wiki/Huffman_coding#Decompression) which describes traversing the tree and writing "0"s for internal nodes and "1"s for leaf nodes (along with the character that the leaf node represents directly after the "1"). Once the tree is constructed (and, as it turns out, the tree will always know when it's done being constructed since it's a binary tree), the decompression algorithm knows that the rest of the bits are the actual encoded text. With `fileio.c` abstracting away all the technical file writing, this part was fairly easy to implement.
+The final thing I had to figure out was how to format the compressed file. By this I mean, it's not good enough to just have the converted bits, you need to also encode the tree itself so the decompressor can rebuild the `.txt` file. I chose to go with a method outlined in the (aforementioned) [Wikipedia article](https://en.wikipedia.org/wiki/Huffman_coding#Decompression) which describes traversing the tree and writing "0"s for internal nodes and "1"s for leaf nodes (along with the character that the leaf node represents directly after the "1"). Once the tree is constructed (and, as it turns out, the tree will always know when it's done being constructed since it's a binary tree), the decompression algorithm knows that the rest of the bits are the actual encoded text. With [fileio.c](./src/global/fileio.c) abstracting away all the technical file writing, this part was fairly easy to implement.
 
 ### Decompressing (Decoding)
 
 The easier of the two, decompressing the data simply consists of two steps:
-1. Reconstructing the tree (`tree.c`)
-2. Decoding the rest of the message (`decode.c`)
+1. Reconstructing the tree ([tree.c](./src/tree.c))
+2. Decoding the rest of the message ([decode.c](./src/decode.c))
 
-To reconstruct the tree, I mirrored to the method I used to encode the tree in `encode.c` in which I simply read in the bits (which also required writing functions to **read** bits as well as write them in `fileio.c`) and reconstruct the tree as I see the bits come in. Once the tree is built and the function is returned, I simply traverse the tree as the rest of the file tells me to ("0" for left, "1" for right). Every time I hit a leaf node, I write it to the file and set the node pointer to the root node again.
+To reconstruct the tree, I mirrored to the method I used to encode the tree in [encode.c](./src/encode.c) in which I simply read in the bits (which also required writing functions to **read** bits as well as write them in [fileio.c](./src/global/fileio.c)) and reconstruct the tree as I see the bits come in. Once the tree is built and the function is returned, I simply traverse the tree as the rest of the file tells me to ("0" for left, "1" for right). Every time I hit a leaf node, I write it to the file and set the node pointer to the root node again.
 
 The only part that took some thought was the very last byte. It's not likely that the encoded bits will be a multiple of 8, so you're going to have to add some padding to the end of the last byte written. So, how do I tell the decoder what's padding and what's not? I decided to use a bit change to indicate that. After the last bit is written, I write a "1" and then the rest of the byte is "0"s padding. When decoding, the decoder reads the last byte from the end until it encounters a "1". Then it knows the bit before that one is the last one. The only edge case is when we actually don't need padding at all: then we have to write an entire byte to the end of the file. Although slightly unfortunate, I couldn't think of any better methods.
+
+## License
+
+See `LICENSE` file for license rights and limitations.
