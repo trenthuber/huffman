@@ -1,0 +1,13 @@
+# Ignore macOS system files
+.DS_store
+
+# Ignore Windows system
+Thumbs.db
+[Dd]esktop.ini
+
+# Ignore Visual Studio Code files
+.vscode/
+
+# Any files that are used for testing
+*.huf
+*.txt

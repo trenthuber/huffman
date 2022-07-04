@@ -30,4 +30,9 @@ void decode(void){
 		// Get the next bit
 		bit = readBit();
 	}
+
+	#ifdef _WIN64
+        printf("\nYour file has been decompressed!\nPress enter to exit the utility. ");
+	    fgetc(stdin);
+    #endif
 }

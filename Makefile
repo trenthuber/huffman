@@ -1,6 +1,6 @@
 .PHONY: clean uninstall
 
-CC = gcc
+CC = cc
 CFLAGS = -O3 -Wall -Wextra
 LDFLAGS = -lm
 

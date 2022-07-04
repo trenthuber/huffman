@@ -9,8 +9,6 @@
 
 #include "tree.h"
 
-int tempLength;
-
 /* Converts list of characters and integers to a Huffman tree of nodes
  * that consist of these characters and their frequency
  */

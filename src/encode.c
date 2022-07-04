@@ -51,4 +51,9 @@ void encode(void){
 
     encodeTree(root);
     encodeFile(root);
+
+    #ifdef _WIN64
+        printf("\nYour file has been compressed!\nPress enter to exit the utility. ");
+	    fgetc(stdin);
+    #endif
 }
