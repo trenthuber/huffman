@@ -11,11 +11,13 @@
 
 void printHelpMessage(void){
     printf(
-        "huffman, version 1.0\n\n"
-        "usage: huffman [-hd] file [-o pathname]\n\n"
-        "h : show help message\n"
-        "d : decompress the given file\n"
-        "o [pathname] : output file (default is \"out.huf\" / \"out.txt\")\n"
+        "\n"
+        "huffman - File compressor using Huffman Coding, version 2.0.1\n\n"
+        "Usage: huffman [-dh] file [-o pathname]\n\n"
+        "Options:\n"
+        "d : Decompress the given file\n"
+        "h : Show help message\n"
+        "o [pathname] : Output file (default is \"out.huf\" / \"out.txt\")\n\n"
     );
 }
 
@@ -119,6 +121,12 @@ int handleOptions(int argc, char **argv){
     char *inputFN, *outputFN;
 	inputFN = outputFN = "";
     
+    // Display help message if no arguments are provided
+    if(argc == 1){
+        printHelpMessage();
+        exit(0);
+    }
+    
     /* As far as I can understand, the getopt() function returns -1 both in the case 
      * of getting an option not in the optstring and when it finishes the options. 
      * For this reason, I'm manually keeping track of the index of the argv array with 
@@ -172,7 +180,7 @@ int handleOptions(int argc, char **argv){
         argvIndex++;
     }
 
-    // Checks if there are no input files provided
+    // Checks if there are (still) no input files provided
     if(iflag == 0){
         fprintf(stderr, "huffman: no input file provided\n");
         exit(-1);
