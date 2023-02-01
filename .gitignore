@@ -1,0 +1,10 @@
+# Any files that are used for testing
+*.o
+*.huf
+*.txt
+*.orig
+*.swp
+
+# Ignore macOS system files
+.DS_store
+./src/.DS_store
