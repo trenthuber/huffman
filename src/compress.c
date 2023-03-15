@@ -10,11 +10,11 @@ static void swap(uint8_t parent_index, uint8_t child_index)
 
 static void insert(uint8_t character, uint64_t freq, Node *left, Node *right)
 {
-	uint8_t child_index = append_new_node(character, freq, left, right), parent_index = (child_index - (child_index % 2)) >> 1;
+	uint8_t child_index = append_new_node(character, freq, left, right), parent_index = child_index >> 1;
 	while(child_index > 0 && heap[parent_index].freq > heap[child_index].freq){
 		swap(parent_index, child_index);
 		child_index = parent_index;
-		parent_index = (child_index - (child_index % 2)) >> 1;
+		parent_index >>= 1;
 	}
 }
 
@@ -30,8 +30,8 @@ static void downheap(void)
 			swap(parent_index, right_index);
 			parent_index = right_index;
 		}
-		left_index = (parent_index * 2) + 1;
-		right_index = (parent_index * 2) + 2;
+		left_index = (parent_index << 1) + 1;
+		right_index = (parent_index << 1) + 2;
 
 		parent_freq = heap[parent_index].freq;
 		left_freq = heap[left_index].freq;
@@ -122,7 +122,7 @@ void compress(void)
 		file_error_message("cannot compress, file too small");
 	}
 
-	uint16_t stack_index = (2 * NUM_ASCII) - 1;
+	uint16_t stack_index = (NUM_ASCII << 1) - 1;
 	while(heap_size > 1){
 
 		heap[stack_index--] = heap[0];
