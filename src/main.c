@@ -49,47 +49,50 @@ static void usage(void)
 		"   -h\tshow this help message\n"
 		"   -o\tset target file\n"
 	);
-	return;
 }
 
 int main(int argc, char **argv)
 {
-	if(argc == 1){
+	if (argc == 1) {
 		usage();
 		exit(0);
 	}
 
 	char *input_file_name = "";
 	uint8_t decompress_flag = 0, input_flag = 0, output_flag = 0;
-	for(--argc, ++argv; argc; --argc, ++argv){
-		if((*argv)[0] == '-'){
-			if((*argv)[2] != '\0'){
+	for (--argc, ++argv; argc; --argc, ++argv) {
+		if ((*argv)[0] == '-') {
+			if ((*argv)[2] != '\0') {
 				file_error_message("illegal option, use -h for help");
 			}
-			switch((*argv)[1]){
-				case 'd':
+			switch ((*argv)[1]) {
+				case 'd': {
 					decompress_flag = 1;
 					break;
-				case 'h':
+				}
+				case 'h': {
 					usage();
 					exit(0);
-				case 'o':
-					if(output_flag){
+				}
+				case 'o': {
+					if (output_flag) {
 						file_error_message("can only output to one file");
 					}
 					--argc;
 					++argv;
-					if(argc == 0 || (*argv)[0] == '-'){
+					if (argc == 0 || (*argv)[0] == '-') {
 						file_error_message("output file path not provided, use -h for help");
 					}
 					output_flag = 1;
 					output_file_name = *argv;
 					break;
-				default:
+				}
+				default: {
 					file_error_message("illegal option, use -h for help");
+				}
 			}
 		}else{
-			if(input_flag){
+			if (input_flag) {
 				file_error_message("can only take input from one file");
 			}
 			input_flag = 1;
@@ -97,19 +100,19 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(!input_flag){
+	if (!input_flag) {
 		file_error_message("input file path not provided, use -h for help");
 	}
-	if(strcmp(input_file_name, output_file_name) == 0){
+	if (strcmp(input_file_name, output_file_name) == 0) {
 		file_error_message("cannot use the same file path for input and output");
 	}
-	if((input_file = fopen(input_file_name, "rb")) == NULL){
+	if ((input_file = fopen(input_file_name, "rb")) == NULL) {
 		file_error_message("could not open input file");
 	}
-	if(!output_flag){
+	if (!output_flag) {
 		output_file_name = strcat(input_file_name, (decompress_flag ? ".orig" : ".huf"));
 	}
-	if((output_file = fopen(output_file_name, "wb")) == NULL){
+	if ((output_file = fopen(output_file_name, "wb")) == NULL) {
 		file_error_message("could not open output file");
 	}
 
